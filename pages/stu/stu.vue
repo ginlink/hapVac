@@ -245,7 +245,7 @@ export default {
       if (!isPassed) return
       // 保存数据
       this.$log(this.form)
-      this.$api.save(STUINFO, this.form)
+      uni.setStorageSync(STUINFO, this.form)
       this.isChangePop = false
 
       this.stuInfo = this.$u.deepClone(this.form)
@@ -273,14 +273,14 @@ export default {
 
           // 写入本地
           self.stuInfo.icon = tmp
-          self.$api.save(STUINFO, self.stuInfo)
+          uni.setStorageSync(STUINFO, self.stuInfo)
           // console.log(JSON.stringify(res.tempFilePaths));
         },
       })
     },
     // 子组件
     initStuInfo() {
-      let tmp = this.$api.get(STUINFO)
+      let tmp = uni.getStorageSync(STUINFO)
       if (tmp) {
         this.stuInfo = tmp
         this.form = this.$u.deepClone(tmp)

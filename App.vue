@@ -105,13 +105,12 @@ export default {
     },
     // this.initVacation
     initData() {
-      let vacDetail = uni.getStorageSync(VACATIONDETAIL)
       if (!uni.getStorageSync(VACATIONDETAIL)) {
         // [服务器] 请求默认数据
         this.$http
           .get('/api/vac/sample')
           .then((res) => {
-            this.$api.save(VACATIONDETAIL, res.data)
+            uni.setStorageSync(VACATIONDETAIL, res.data)
           })
           .catch((err) => {
             console.log('err:func(App)(initData)', err)

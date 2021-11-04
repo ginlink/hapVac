@@ -411,7 +411,7 @@ export default {
         this.vacationList = tmp
         vacationDetail.data.list = tmp
 
-        this.$api.save(VACATIONDETAIL, vacationDetail)
+        uni.setStorageSync(VACATIONDETAIL, vacationDetail)
       }
 
       this.$log(this.vacationList, 'this.vacationList1')
