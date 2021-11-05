@@ -6,7 +6,7 @@ const myMenu = {
 			id: 1,
 			icon: '/static/img/stuCenter/vacation.svg',
 			title: '请销假',
-			url: '/pages/vacation/vacation',
+			url: '/pages/vacation/index',
 		}, {
 			id: 2,
 			icon: '/static/img/stuCenter/write.svg',
@@ -57,7 +57,7 @@ const Vacation = {
 			reason: '买东西',
 			isTellParent: false,
 			isLeaveSchool: true,
-		},{
+		}, {
 			id: 2,
 			type: 0, // 类型
 			startTime: '2020-11-01 12:00',
@@ -68,7 +68,7 @@ const Vacation = {
 			reason: '买东西',
 			isTellParent: false,
 			isLeaveSchool: true,
-		},{
+		}, {
 			id: 3,
 			type: 1, // 类型
 			startTime: '2020-09-01 12:00',
@@ -86,16 +86,16 @@ const Vacation = {
 
 const VacationDetailInfo = {
 	code: 1,
-	data:{
-		list:[
+	data: {
+		list: [
 			{
 				id: 1,
-				check:{
-					checkName:'王同斌',
-					checkTime:'2020-10-11 10:00',
+				check: {
+					checkName: '王同斌',
+					checkTime: '2020-10-11 10:00',
 					status: 3,  // 状态：0未审核 1未通过 2已完成 3通过
 				},
-				detail:{
+				detail: {
 					applyTime: '2020-10-11 08:00:11',
 					startTime: '2020-10-11 08:00:11',
 					endTime: '2020-10-11 08:00:11',
@@ -106,16 +106,17 @@ const VacationDetailInfo = {
 					urgentContactName: '马云',
 					urgentContactTel: '13837487347',
 					other: null,
+
 				}
 			},
 			{
 				id: 2,
-				check:{
-					checkName:'王同斌',
-					checkTime:'2020-10-11 10:00',
+				check: {
+					checkName: '王同斌',
+					checkTime: '2020-10-11 10:00',
 					status: 0,  // 状态：0未审核 1未通过 2已完成 3通过
 				},
-				detail:{
+				detail: {
 					applyTime: '2020-10-11 08:00:11',
 					startTime: '2020-10-11 08:00:11',
 					endTime: '2020-10-11 08:00:11',
@@ -130,12 +131,12 @@ const VacationDetailInfo = {
 			},
 			{
 				id: 3,
-				check:{
-					checkName:'王同斌',
-					checkTime:'2020-10-11 10:00',
+				check: {
+					checkName: '王同斌',
+					checkTime: '2020-10-11 10:00',
 					status: 3,  // 状态：0未审核 1未通过 2已完成 3通过
 				},
-				detail:{
+				detail: {
 					applyTime: '2020-10-11 08:00:11',
 					startTime: '2020-10-11 08:00:11',
 					endTime: '2020-10-11 08:00:11',
@@ -156,41 +157,41 @@ const VacationDetailInfo1 = {
 	code: 1,
 	createTime: '202020020200202',
 	list: [{
-			text: '请假开始时间:',
-			value: '2021-01-12 10:00:00'
-		},
-		{
-			text: '请假结束时间:',
-			value: '2021-01-12 10:00:00'
-		},
-		{
-			text: '请假类型:',
-			value: '事假'
-		},
-		{
-			text: '请假原因：',
-			value: '身体不适'
-		},
-		{
-			text: '是否告知家长：',
-			value: '否'
-		},
-		{
-			text: '是否需要离校：',
-			value: '是'
-		},
-		{
-			text: '紧急联系人:',
-			value: '马云'
-		},
-		{
-			text: '紧急联系人电话:',
-			value: '132838238823'
-		},
-		{
-			text: '附件：无',
-			value: ''
-		},
+		text: '请假开始时间:',
+		value: '2021-01-12 10:00:00'
+	},
+	{
+		text: '请假结束时间:',
+		value: '2021-01-12 10:00:00'
+	},
+	{
+		text: '请假类型:',
+		value: '事假'
+	},
+	{
+		text: '请假原因：',
+		value: '身体不适'
+	},
+	{
+		text: '是否告知家长：',
+		value: '否'
+	},
+	{
+		text: '是否需要离校：',
+		value: '是'
+	},
+	{
+		text: '紧急联系人:',
+		value: '马云'
+	},
+	{
+		text: '紧急联系人电话:',
+		value: '132838238823'
+	},
+	{
+		text: '附件：无',
+		value: ''
+	},
 	]
 }
 

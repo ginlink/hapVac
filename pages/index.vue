@@ -1,7 +1,7 @@
 <template>
   <view class="index">
-    <stu-center v-if="startPage.indexOf('pages/stu/stu') != -1 && isValid" />
-    <console v-else-if="startPage.indexOf('pages/console/console') != -1 && isValid" />
+    <stu-center v-if="startPage.indexOf('pages/student-center/index') != -1 && isValid" />
+    <console v-else-if="startPage.indexOf('pages/console/index') != -1 && isValid" />
     <view v-else> </view>
 
     <u-button @click="loginWechat">微信登录</u-button>
@@ -29,9 +29,8 @@
 
 <script>
 import { START_PAGE, VERSION } from '@/common/misc.js'
-import StuCenter from './stu/stu.vue'
-import Console from './console/console.vue'
-import UButton from '../uview-ui/components/u-button/u-button.vue'
+import StuCenter from './student-center/index.vue'
+import Console from './console/index.vue'
 
 function isUpdateVersion(o, n) {
   console.log('[](o, n):', o, n)
@@ -56,7 +55,6 @@ export default {
   components: {
     StuCenter,
     Console,
-    UButton,
   },
   data() {
     return {
@@ -67,8 +65,10 @@ export default {
     }
   },
   created() {
-    // this.startPage = uni.getStorageSync(START_PAGE) || '/pages/console/console'
-    this.startPage = '/pages/stu/stu'
+    // this.startPage = uni.getStorageSync(START_PAGE) || '/pages/console/index'
+    this.startPage = '/pages/student-center/index'
+
+    // this.$Router.push({ path: '/pages/record/index', query: { userId: '123' } })
   },
   computed: {
     show: {
@@ -139,9 +139,12 @@ export default {
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwib3Blbl9pZCI6Im9SSTVrNWVTamxSTWNyN3hPTnc5eFptU3VGeDgiLCJzZXNzaW9uX2tleSI6Imw2MXRTaml5Q09lUmpPV0Npc2pjNEE9PSIsIm5pY2tfbmFtZSI6bnVsbCwiYXZhdGFyX3VybCI6bnVsbCwiaWF0IjoxNjM2MDE4Mzc4LCJleHAiOjE2MzYwMzI3Nzh9.vs64KToEh-NaRMMECj2pYSnmDbHlsrBNNlS55_n41JU'
           const token2 =
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwib3Blbl9pZCI6Im9SSTVrNWVTamxSTWNyN3hPTnc5eFptU3VGeDgiLCJzZXNzaW9uX2tleSI6InVyLzE0MzcwNloybUFuaXlJMGl5M1E9PSIsIm5pY2tfbmFtZSI6IuWIh-aNouWIsOWkp-WktCIsImF2YXRhcl91cmwiOiJodHRwczovL3RoaXJkd3gucWxvZ28uY24vbW1vcGVuL3ZpXzMyL1EwajRUd0dUZlRLbHB1WHoxNDZVOFFMa0ZxUmdOdGJjcjNDa0dkSXVrMHluWUdQajBIS0pVQkJDbVN2ODhpY28ySkg1Z0c2ZHlhZDJWWm9ZaWFiamliVjFnLzEzMiIsImlhdCI6MTYzNjAyMDk3MywiZXhwIjoxNjM2MDM1MzczfQ.ptA0J9_Ttuw_WJuq2um9lLZdAOekLftOZ9AT4D6HsSg'
+          const token3 =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwib3Blbl9pZCI6Im9SSTVrNWVTamxSTWNyN3hPTnc5eFptU3VGeDgiLCJzZXNzaW9uX2tleSI6InhsYWtvV1JBOS9QUjNHQ3ZoZERqOGc9PSIsIm5pY2tfbmFtZSI6bnVsbCwiYXZhdGFyX3VybCI6bnVsbCwiaWF0IjoxNjM2MDcyMzI0LCJleHAiOjE2MzYwODY3MjR9.nB6hG-Thh2JSEtgUg6ZIJSMq0-d8_2nkD2JLRYHzJKs'
           // config.headers.Authorization = `Bearer ${token}`;
           uni.request({
-            url: 'http://192.168.3.42:3040/api/user/getUserInfo/', //仅为示例，并非真实接口地址。
+            // url: 'http://192.168.3.42:3040/api/user/getUserInfo/', //仅为示例，并非真实接口地址。
+            url: 'http://192.168.3.72:3040/api/user/getUserInfo/', //仅为示例，并非真实接口地址。
             method: 'POST',
             data: {
               encryptedData,
@@ -150,7 +153,8 @@ export default {
             header: {
               'custom-header': 'hello', //自定义请求头信息
               // Authorization: `Bearer ${token1}`,
-              Authorization: `Bearer ${token2}`,
+              // Authorization: `Bearer ${token2}`,
+              Authorization: `Bearer ${token3}`,
             },
             success: (res) => {
               console.log(res.data)
@@ -168,7 +172,8 @@ export default {
           const code = loginRes.code
 
           uni.request({
-            url: 'http://192.168.3.42:3040/api/auth/login', //仅为示例，并非真实接口地址。
+            // url: 'http://192.168.3.42:3040/api/auth/login', //仅为示例，并非真实接口地址。
+            url: 'http://192.168.3.72:3040/api/auth/login', //仅为示例，并非真实接口地址。
             method: 'POST',
             data: {
               code,

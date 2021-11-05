@@ -103,13 +103,11 @@
     ></u-select>
 
     <u-toast ref="uToast" />
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 
 <script>
-import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY, MAXLENGTH } from '@/common/const/index.js'
+import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY, MAXLENGTH } from '@/common/misc.js'
 
 export default {
   data() {
@@ -554,18 +552,6 @@ export default {
           isPassed = true
           this.$log('验证通过', '验证')
           this.$log(this.form, 'form')
-
-          // if (this.isInitDetialForm) {
-          // 	this.$refs.detailForm.validate(valid => {
-          // 		if (valid) {
-
-          // 		} else {
-          // 			console.log('验证失败');
-          // 		}
-          // 	});
-          // }
-
-          // this.$toast(this,'请填写下一步数据', 2)
         } else {
           console.log('验证失败')
         }
@@ -573,7 +559,13 @@ export default {
 
       // if (!isPassed1 || !isPassed2) return
       if (!isPassed) return
-      if (!this.isLookNext) return this.$toast(this, '请瞥一眼下一步', 3)
+      if (!this.isLookNext) {
+        return uni.showToast({
+          title: '请瞥一眼下一步',
+          icon: 'error',
+          mask: true,
+        })
+      }
 
       const self = this
       switch (this.action) {
@@ -694,7 +686,7 @@ export default {
       console.log('currentVacInfo:', currentVacInfo)
       // 更新数据
 
-      this.$Router.push('/pages/vacation/vacation')
+      this.$Router.push('/pages/vacation/index')
     },
     confirm(e) {
       console.log('e:', e)
@@ -714,10 +706,6 @@ export default {
     .form-wrapper {
       padding: 0 30rpx 0;
       background-color: $wm-bg-fff;
-
-      .switch {
-        /* background-color: #f00; */
-      }
     }
 
     .btn {

@@ -115,16 +115,14 @@
         </u-popup>
       </view>
     </view>
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 
 <script>
-import StuInfo from './children/StuInfo'
-import item from './children/Menu'
+import StuInfo from './student-info'
+import item from './menu'
 import { StuInfoData } from '@/common/mock-data/vac.js'
-import { STUINFO } from '@/common/const/index.js'
+import { STUINFO } from '@/common/misc.js'
 import backIconName from '@/static/home/home.png'
 
 export default {
@@ -224,9 +222,15 @@ export default {
   methods: {
     navClick(item) {
       console.log('item:', item)
-      if (item.url === '') return this.$toast(this, '该功能开发中...', 3)
+      if (item.url === '') {
+        return uni.showToast({
+          title: '该功能开发中...',
+          icon: 'error',
+          mask: true,
+        })
+      }
 
-      this.$utils.u_tips(item && item.url)
+      uni.navigateTo({ url: item?.url })
     },
     action(flag) {},
     confirm(flag, data) {
@@ -269,7 +273,11 @@ export default {
         success: function (res) {
           let tmp = res.tempFilePaths[0]
           self.$log(tmp)
-          self.$toast(self, '更改头像成功！')
+          uni.showToast({
+            title: '更改头像成功！',
+            icon: 'success',
+            mask: true,
+          })
 
           // 写入本地
           self.stuInfo.icon = tmp
@@ -291,7 +299,7 @@ export default {
       this.form = this.$u.deepClone(StuInfoData)
     },
     customBack() {
-      // this.$utils.u_tips('/pages/console/console')
+      // uni.navigateTo({ url: '/pages/console/index' })
     },
   },
 }

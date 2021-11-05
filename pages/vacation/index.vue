@@ -37,13 +37,10 @@
       </view>
     </view>
 
-    <!-- 附加内容 -->
     <view class="plug">
-      <!-- 数据为空 -->
       <view v-if="vacationList && vacationList.length == 0" class="empty">
         <u-empty text="数据为空" mode="data"></u-empty>
       </view>
-      <!-- 数据为空 -->
 
       <!-- popup弹窗 -->
       <view class="popup">
@@ -84,15 +81,13 @@
 
       <!-- popup弹窗 -->
     </view>
-    <!-- 附加内容 -->
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 
 <script>
 import VacationItem from './children/VacationItem'
 
-import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/const/index.js'
+import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/misc.js'
 
 export default {
   components: {
@@ -280,21 +275,10 @@ export default {
           // this.$u.toast(`删除了第${index}个cell`);
           break
         case 0:
-          console.log('编辑')
-          // this.vacationList[index].show = false;
-          // // 编辑
-          // this.show = true
+          const action = 'edit'
+          const id = item.id
 
-          this.$utils.u_tips(
-            {
-              loadding: false,
-              data: {
-                action: 'edit',
-                id: item.id,
-              },
-            },
-            '/pages/public/pub-edit-vac'
-          )
+          uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}&id=${id}` })
           break
       }
     },
@@ -309,28 +293,14 @@ export default {
 
     // 假条点击事件
     vacItemClick(item) {
-      console.log('点击')
-      this.$utils.u_tips(
-        {
-          loadding: false,
-          data: {
-            id: item.id,
-          },
-        },
-        '/pages/vacation/children/VactionDetail'
-      )
+      const id = item.id
+
+      uni.navigateTo({ url: `/pages/public/pub-edit-vac?id=${id}` })
     },
     applyVacation() {
-      console.log('请假')
-      this.$utils.u_tips(
-        {
-          loadding: false,
-          data: {
-            action: 'add',
-          },
-        },
-        '/pages/public/pub-edit-vac'
-      )
+      const action = 'add'
+
+      uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}` })
     },
 
     calcOtherTime() {

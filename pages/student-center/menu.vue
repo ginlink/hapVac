@@ -17,26 +17,7 @@
       <view class="content">
         <uni-icons type="arrowright" size="17"></uni-icons>
       </view>
-
-      <!-- <navbar class="item-navbar" :lay_left="{width:'50px',margin:'auto',display:'flex',alignItems:'center'}" :lay_center="{margin:'auto'}"
-			 @click.native="navClick(menu)">
-				<template v-slot:leftnav>
-					<view class="" style="margin: 0 auto; display: flex;">
-						<image :src="menu.icon" mode="" style="height: 20px;width: 20px;"></image>
-					</view>
-				</template>
-				<template v-slot:centernav style="margin: auto;">
-					<view class="" style="text-align: left;font-size: 32rpx;">
-						{{menu.title}}
-					</view>
-				</template>
-				<template v-slot:rightnav>
-					<uni-icons type="arrowright" size="17"></uni-icons>
-				</template>
-			</navbar> -->
     </view>
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 
@@ -90,9 +71,15 @@ export default {
     // 导航栏点击事件
     navClick(myMenu) {
       console.log('myMenu:', myMenu)
-      if (myMenu.url === '') return this.$toast(this, '该功能开发中...', 3)
+      if (myMenu.url === '') {
+        return uni.showToast({
+          title: '该功能开发中...',
+          icon: 'error',
+          mask: true,
+        })
+      }
 
-      this.$utils.u_tips(myMenu && myMenu.url)
+      uni.navigateTo({ url: myMenu && myMenu.url })
     },
   },
 }

@@ -1,8 +1,14 @@
 {
   "easycom": {
-    "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+    "^u-(.*)": "@/components/uview-ui/components/u-$1/u-$1.vue"
   },
   "pages": [
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登陆"
+      }
+    },
     {
       "path": "pages/index",
       "style": {
@@ -10,7 +16,7 @@
       }
     },
     {
-      "path": "pages/console/console",
+      "path": "pages/console/index",
       "style": {
         "navigationBarTitleText": "操作台"
       }
@@ -28,7 +34,7 @@
       }
     },
     {
-      "path": "pages/stu/stu",
+      "path": "pages/student-center/index",
       "style": {
         "navigationBarTitleText": "学生中心"
       }
@@ -43,7 +49,7 @@
       "path": "pages/public/pub-edit-vac"
     },
     {
-      "path": "pages/vacation/vacation",
+      "path": "pages/vacation/index",
       "style": {
         "navigationBarTitleText": "我的假条"
       }

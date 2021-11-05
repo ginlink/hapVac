@@ -24,8 +24,6 @@
         >点击下载：<a :href="androidAppUrl" target="__blank">{{ androidAppUrl }}</a></view
       >
     </view>
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 

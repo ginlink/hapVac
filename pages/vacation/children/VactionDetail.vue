@@ -84,7 +84,7 @@
 
 <script>
 import VacFooter from './VacFooter.vue'
-import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/const/index.js'
+import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/misc.js'
 
 export default {
   onLoad(params) {
@@ -218,32 +218,16 @@ export default {
   },
   methods: {
     action(flag) {
+      const id = this.vacation.id
       switch (flag) {
         case 1:
           // 续假
-          this.$utils.u_tips(
-            {
-              loadding: false,
-              data: {
-                action: 'edit',
-                id: this.vacation.id,
-              },
-            },
-            '/pages/public/pub-edit-vac'
-          )
-
+          const action = 'edit'
+          uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}&id=${id}` })
           break
         case 2:
           // 销假
-          this.$utils.u_tips(
-            {
-              loadding: false,
-              data: {
-                id: this.vacation.id,
-              },
-            },
-            './ReportBack'
-          )
+          uni.navigateTo({ url: `./ReportBack?id=${id}` })
           break
       }
     },

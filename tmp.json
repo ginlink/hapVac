@@ -9,25 +9,25 @@
           "id": 1,
           "icon": "/static/stu/01-01.png",
           "title": "请销假",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 2,
           "icon": "/static/stu/01-02.png",
           "title": "健康晨报",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 3,
           "icon": "/static/stu/01-03.png",
           "title": "健康日报",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 4,
           "icon": "/static/stu/01-04.png",
           "title": "离返校登记",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         }
       ]
     },
@@ -38,19 +38,19 @@
           "id": 1,
           "icon": "/static/stu/02-01.png",
           "title": "通知公告",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 2,
           "icon": "/static/stu/02-02.png",
           "title": "课堂缺勤记录",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 3,
           "icon": "/static/stu/02-03.png",
           "title": "课堂评价",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         }
       ]
     },
@@ -61,19 +61,19 @@
           "id": 1,
           "icon": "/static/stu/03-01.png",
           "title": "使用帮助",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 2,
           "icon": "/static/stu/03-02.png",
           "title": "返校申请",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         },
         {
           "id": 3,
           "icon": "/static/stu/03-03.png",
           "title": "问题反馈",
-          "url": "/pages/vacation/vacation"
+          "url": "/pages/vacation/index"
         }
       ]
     }

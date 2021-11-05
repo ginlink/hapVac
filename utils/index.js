@@ -1,16 +1,8 @@
-/*
- * @Author: jiangjin
- * @Date: 2021-10-13 20:58:05
- * @LastEditTime: 2021-10-13 20:58:06
- * @LastEditors: jiangjin
- * @Description:
- *
- */
-
 // 作者：我是一个小哥哥
 // 链接：https://juejin.cn/post/6844903967923650573
 // 来源：稀土掘金
 // 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 export function deepClone(obj) {
   if (obj === null) return null; //null 的情况
   if (obj instanceof RegExp) return new RegExp(obj); //正则表达式的情况

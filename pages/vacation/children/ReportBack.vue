@@ -24,19 +24,6 @@
       </view>
     </view>
 
-    <!-- <view class="" style="background: #fff;padding: 0 10px;">
-			<flex2 v-if="item" :leftStyle="item && item.lStyle" :rightStyle="item && item.rStyle" :totalStyle="item && item.tStyle"
-			 v-for="(item,index) in reportBackData" @click.native="itemClick(item.id)">
-				<template v-slot:left>
-					<text>{{item && item.left}}</text>
-				</template>
-				<template v-slot:right>
-					<text>{{item && item.right}}</text>
-					<uni-icons v-if="item && item.icon &&  item.icon.is" :type="item.icon.type" :size="item.icon.size"></uni-icons>
-				</template>
-			</flex2>
-		</view> -->
-
     <!-- 销假 -->
     <button class="sure-btn" :class="{ 'sure-btn-active': isValid }" :disabled="!isValid" @click="sureReportBack">
       确认销假
@@ -53,16 +40,8 @@
 </template>
 
 <script>
-import flex2 from '@/components/common/flex/flex2.vue'
-import pop from '@/utils/tips.js'
-import { vac, toast } from '@/common/mixin/index.js'
-
 export default {
-  mixins: [vac, toast],
-  components: {
-    flex2,
-    ...pop,
-  },
+  components: {},
   onLoad(params) {
     this.currentId = parseInt(params.id)
 

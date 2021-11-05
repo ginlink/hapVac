@@ -4,7 +4,7 @@
 // 	centerMenu,
 // } from '@/common/mock-data/vac.js'
 
-import { VACATIONDETAIL, CENTERMENU } from '@/common/const/index.js'
+import { VACATIONDETAIL, CENTERMENU } from '@/common/misc.js'
 import { START_PAGE } from '@/common/misc.js'
 
 export default {
@@ -91,8 +91,8 @@ export default {
     },
     initCenterMenu() {
       this.$http
-        .get('/api/centermenu_v2')
-        // .get('/api/centermenu_v2_backup')
+        // .get('/api/centermenu_v2')
+        .get('/api/centermenu_v2_backup')
         .then((res) => {
           const data = res.data.data ?? {}
 
@@ -133,10 +133,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'uview-ui/index.scss';
-/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
-@import './common/uni.css';
-
 // 通用form样式
 .form-wrapper {
   padding: 0 30rpx 0;
