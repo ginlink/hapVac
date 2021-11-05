@@ -13,6 +13,8 @@ export const FORMATDAY = "YYYY-MM-DD"
 export const FORMATHOUR = "YYYY-MM-DD HH"
 export const FORMATSECOND = "YYYY-MM-DD HH:mm:ss"
 
+export const USER_INFO = 'USER_INFO'
+
 
 export const VERSION_NODES = [
   { version: '1.0.0', pieces: ['* 增加请假、销假、续假功能'], updateTime: '2021.10.12 00:29:52' },

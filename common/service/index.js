@@ -1,6 +1,7 @@
 import Request from '@/common/luch-request/index.js'
 
 import { BASE_URL } from './config.js'
+import { USER_INFO } from "@/common/misc.js";
 
 const http = new Request()
 http.setConfig((config) => {
@@ -10,19 +11,39 @@ http.setConfig((config) => {
 })
 
 http.validateStatus = (statusCode) => {
-	return statusCode === 200
+	return statusCode === 200 || statusCode === 201
 }
 
 http.interceptor.request((config, cancel) => {
-	//TODO 可以加上Token
+	const userInfo = uni.getStorageSync(USER_INFO)
+
+	const token = userInfo?.token
+
+	console.log('[](token):', token)
+
+	config.header = {
+		Authorization: `Bearer ${token}`
+	}
 	return config
 })
 
 // 必须使用异步函数，注意
 http.interceptor.response(async (response) => {
-	return response
+	const statusCode = response.statusCode
+	console.log('[resolve](statusCode):', statusCode)
+
+	return response.data
 }, (response) => {
-	return response
+	const statusCode = response.statusCode
+	console.log('[reject](statusCode):', statusCode)
+
+	switch (statusCode) {
+		case 401:
+			uni.redirectTo({ url: '/pages/login/index' })
+			break;
+	}
+
+	return response.data
 })
 
 export {

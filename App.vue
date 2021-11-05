@@ -9,22 +9,24 @@ import { START_PAGE } from '@/common/misc.js'
 
 export default {
   onLaunch: function () {
-    uni.showLoading({
-      title: '加载中',
-    })
+    // uni.showLoading({
+    //   title: '加载中',
+    // })
     console.log('App Launch')
 
-    this.initData() // 初始化全局信息
+    this.checkSession()
 
-    this.initCenterMenu()
+    // this.initData() // 初始化全局信息
 
-    this.initAppNum()
+    // this.initCenterMenu()
 
-    this.initNoticeList()
+    // this.initAppNum()
 
-    this.initVersion()
+    // this.initNoticeList()
 
-    this.initValidCode()
+    // this.initVersion()
+
+    // this.initValidCode()
   },
   onShow: function () {
     console.log('App Show')
@@ -33,6 +35,16 @@ export default {
     console.log('App Hide')
   },
   methods: {
+    checkSession() {
+      // 检查用户session是否过期，过期则跳转登录页面，更新个人头像等信息
+      uni.checkSession({
+        // 过期
+        fail: function (err) {
+          console.log('[](err):', '信息过期，去登录', err)
+          this.$Router.push('/pages/login/index')
+        },
+      })
+    },
     initValidCode() {
       this.$http
         .get('/api/validCode')
