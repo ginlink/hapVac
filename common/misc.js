@@ -13,6 +13,7 @@ export const FORMAT_TO_SECOND = "YYYY-MM-DD HH:mm:ss"
 
 export const USER_INFO = 'USER_INFO'
 
+// 审核
 export const vacationStatus = [
   {
     label: '未审核',
@@ -31,6 +32,7 @@ export const vacationStatus = [
     value: '4',
   },
 ]
+// 请假详情页面状态
 export const vacationDetailStatus = [
   {
     label: '未审核',
@@ -53,6 +55,30 @@ export const vacationDetailStatus = [
     color: '#09BA08',
   },
 ]
+// 请假列表页面状态
+export const vacationListStatus = [
+  {
+    label: '未审核',
+    value: '1',
+    color: '#3685F1',
+  },
+  {
+    label: '未通过',
+    value: '2',
+    color: '#ee2222',
+  },
+  {
+    label: '已完成',
+    value: '3',
+    color: '#9b9b9b',
+  },
+  {
+    label: '审批通过',
+    value: '4',
+    color: '#09BA08',
+  },
+]
+// 审核意见
 export const vacationAdvices = [
   {
     label: '未审核',

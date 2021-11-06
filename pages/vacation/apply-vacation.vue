@@ -107,7 +107,11 @@
 <script>
 import { FORMAT_TO_SECOND, vacationStatus as status } from '@/common/misc.js'
 import { calcTime } from '@/utils/date.js'
+import dayjs from 'dayjs'
+import { FORMAT_TO_MINUTE } from '../../common/misc.js'
 import { pageOneRules } from './constant.js'
+
+// console.log('[](calcTime):', calcTime('2021-11-06 14:41:12'))
 
 // form字段
 const form = {
@@ -234,8 +238,8 @@ export default {
           const newForm = {
             type: data.type,
             typeLabel: types.find((item) => item.value == data.type)?.label,
-            startTime: data.start_time,
-            endTime: data.end_time,
+            startTime: dayjs.unix(data.start_time).format(FORMAT_TO_MINUTE),
+            endTime: dayjs.unix(data.end_time).format(FORMAT_TO_MINUTE),
             reason: data.reason,
             isTellParent: data.is_tell_parent,
             isLeaveSchool: data.is_leave_school,
@@ -300,10 +304,12 @@ export default {
       // 拿到表单数据
       const form = this.form
       const computedTime = calcTime(form.startTime)
+
+      console.log('[](computedTime):', computedTime)
       const vacation = {
-        apply_time: computedTime.applyTime,
-        start_time: form.startTime,
-        end_time: form.endTime,
+        apply_time: dayjs(computedTime.applyTime).unix(),
+        start_time: dayjs(form.startTime).unix(),
+        end_time: dayjs(form.endTime).unix(),
         type: form.type,
         reason: form.reason,
         is_tell_parent: form.isTellParent,
@@ -312,9 +318,11 @@ export default {
         urgent_tel: form.urgentContactTel,
         other: form.other,
         check_name: form.checkName,
-        check_time: computedTime.checkTime,
+        check_time: dayjs(computedTime.checkTime).unix(),
         status: form.status,
       }
+
+      console.log('[](newVacation):', vacation)
 
       // 提交
       switch (this.currentAction) {
@@ -385,10 +393,10 @@ export default {
       this.form.status = params && params[0] && params[0].value
     },
     formatDate(params) {
-      console.log('day:', params.day)
+      const { year, month, day, hour, minute, second } = params
 
-      const d = new Date(params.year, params.month - 1, params.day, params.hour, params.minute)
-      return this.$dayjs(d).format(FORMAT_TO_SECOND)
+      const d = new Date(year || 0, month - 1 || 0, day || 0, hour || 0, minute || 0, second || 0)
+      return this.$dayjs(d).format(FORMAT_TO_MINUTE)
     },
   },
 }

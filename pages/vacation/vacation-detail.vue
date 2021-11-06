@@ -87,37 +87,12 @@
             <view class="detail-item">
               <view class="title"> 附件: 无 </view>
             </view>
-
-            <!-- <view
-              class="detail-item"
-              style="display: flex; align-items: center; padding: 3px 0"
-              v-for="(item, index) in vacationDetailList"
-              :key="index"
-            >
-              <view style="flex: 1">
-                <view class="title">
-                  {{ item.text }}
-                </view>
-              </view>
-              <view style="flex: 2">
-                <view class="value">
-                  {{ item.value }}
-                  <view v-if="index == 'endTime' && showDayDiff" class="badge">
-                    {{ showDayDiff }}
-                  </view>
-                </view>
-              </view>
-            </view> -->
           </view>
         </view>
       </view>
       <vac-footer v-if="checkStatus.value == 4" @action="action"></vac-footer>
-
-      <!-- 模态框 -->
-      <u-modal v-model="show" :content="content">
-        <!-- <u-input v-model="name"></u-input> -->
-      </u-modal>
     </view>
+
     <view v-else class="no-data">
       <view class="text"> 无此假条数据！ </view>
     </view>
@@ -127,21 +102,15 @@
 <script>
 import VacFooter from './vacation-footer.vue'
 import {
-  VACATION_DETAIL,
   FORMAT_TO_SECOND,
   FORMAT_TO_MINUTE,
-  FORMAT_TO_HOUR,
-  FORMAT_TO_DAY,
   vacationAdvices,
   vacationStatus,
   vacationDetailStatus,
 } from '@/common/misc.js'
 
 export default {
-  onLoad(params) {
-    console.log('params:', params)
-    this.currentParams = params
-
+  onLoad() {
     const { id } = this.$Route.query
 
     if (!id) {
@@ -151,36 +120,12 @@ export default {
         mask: true,
       })
     }
+    this.currentId = id
 
-    const dayjs = this.$dayjs
-    this.$http
-      .get('/api/vacation/' + id)
-      .then((res) => {
-        const data = res.data
-        data.start_time = dayjs(data?.start_time).format(FORMAT_TO_MINUTE)
-        data.end_time = dayjs(data?.end_time).format(FORMAT_TO_MINUTE)
-        data.apply_time = dayjs(data?.apply_time).format(FORMAT_TO_SECOND)
-        data.check_time = dayjs(data?.check_time).format(FORMAT_TO_SECOND)
-
-        this.vacation = data
-
-        console.log('[](vacation):', this.vacation)
-      })
-      .catch((err) => {
-        uni.showToast({
-          title: '获取假条失败',
-          icon: 'error',
-          mask: true,
-        })
-        console.log('[/api/vacation](err):', err)
-      })
-
-    // this.initData(params)
-    // this.initEvent()
+    this.fetchVacation()
   },
   onShow() {
-    this.vacationDetail = uni.getStorageSync(VACATION_DETAIL) // 更新数据
-    this.vacationDetail = Object.assign({}, this.vacationDetail)
+    this.fetchVacation()
   },
   components: {
     VacFooter,
@@ -229,122 +174,62 @@ export default {
   },
   data() {
     return {
+      currentId: undefined,
       vacationStatus: vacationStatus,
       vacationAdvices: vacationAdvices,
-      currentParams: {},
 
-      conditionTitle: '审批通过',
-      conditionColor: '#09BA08',
-      show: false,
-      content: '东临碣石，以观沧海',
-
-      vacationDetailList: {
-        startTime: {
-          text: '开始请假时间:',
-          value: '2021-01-12 10:00:00',
-        },
-        endTime: {
-          text: '请假结束时间:',
-          value: '2021-01-12 10:00:00',
-        },
-        type: {
-          text: '请假类型:',
-          value: '事假',
-        },
-        reason: {
-          text: '请假原因:',
-          value: '身体不适',
-        },
-        isTellParent: {
-          text: '是否告知家长:',
-          value: 0,
-        },
-        isLeaveSchool: {
-          text: '是否需要离校:',
-          value: 0,
-        },
-        urgentContactName: {
-          text: '紧急联系人:',
-          value: '马云',
-        },
-        urgentContactTel: {
-          text: '紧急联系人电话:',
-          value: '132838238823',
-        },
-        other: {
-          text: '附件: 无',
-          value: '',
-        },
-      },
       vacation: null,
     }
   },
   methods: {
+    fetchVacation() {
+      const id = this.currentId
+
+      if (!id) {
+        return uni.showToast({
+          title: '未知错误',
+          icon: 'error',
+          mask: true,
+        })
+      }
+
+      const dayjs = this.$dayjs
+      this.$http
+        .get('/api/vacation/' + id)
+        .then((res) => {
+          const data = res.data
+          data.start_time = dayjs.unix(data?.start_time).format(FORMAT_TO_MINUTE)
+          data.end_time = dayjs.unix(data?.end_time).format(FORMAT_TO_MINUTE)
+          data.apply_time = dayjs.unix(data?.apply_time).format(FORMAT_TO_SECOND)
+          data.check_time = dayjs.unix(data?.check_time).format(FORMAT_TO_SECOND)
+
+          this.vacation = data
+
+          console.log('[](vacation):', this.vacation)
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: '获取假条失败',
+            icon: 'error',
+            mask: true,
+          })
+          console.log('[/api/vacation](err):', err)
+        })
+    },
     action(flag) {
       const id = this.vacation.id
       switch (flag) {
         case 1:
           // 续假
           const action = 'edit'
-          uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}&id=${id}` })
+
+          this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { action, id } })
           break
         case 2:
           // 销假
-          uni.navigateTo({ url: `./ReportBack?id=${id}` })
+          this.$Router.push({ path: '/pages/vacation/cancel-vacation', query: { id } })
           break
       }
-    },
-    initData(params) {
-      this.initVacation(params)
-
-      this.initStatu()
-    },
-    initStatu() {
-      let vacation = this.vacation
-      console.log('vacation:', vacation)
-      this.status = this.status[vacation.status]
-    },
-    initVacation(params) {
-      let id = parseInt(params && params.id)
-      if (!id) return
-
-      // [服务器]
-      let VacationDetailInfo = uni.getStorageSync(VACATION_DETAIL)
-      let vacDetailList = VacationDetailInfo.data.list
-
-      this.vacation = vacDetailList.find((item) => {
-        return item.id == id
-      })
-
-      this.$log(this.vacation)
-
-      if (!this.vacation) return
-
-      console.log('[](this.vacation):', this.vacation)
-
-      // this.vacationDetailList.applyTime.value = this.vacation.applyTime
-      this.vacationDetailList.endTime.value = this.vacation.endTime.slice(0, -3)
-      this.vacationDetailList.isLeaveSchool.value = this.vacation.isLeaveSchool == 0 ? '否' : '是'
-      this.vacationDetailList.isTellParent.value = this.vacation.isTellParent == 0 ? '否' : '是'
-      this.vacationDetailList.other.value = this.vacation?.other ?? ''
-      this.vacationDetailList.reason.value = this.vacation.reason
-      this.vacationDetailList.startTime.value = this.vacation.startTime.slice(0, -3)
-      this.vacationDetailList.type.value = this.vacation.type
-      this.vacationDetailList.urgentContactName.value = this.vacation.urgentContactName
-      this.vacationDetailList.urgentContactTel.value = this.vacation.urgentContactTel
-
-      console.log('vacation:', this.vacation)
-    },
-    changeVacInfo() {
-      // 弹窗修改
-      this.show = true
-    },
-
-    initEvent() {
-      uni.$on('refreshVacDetailDetail', () => {
-        this.initData(this.currentParams)
-        this.$log('刷新数据', 'initEvent')
-      })
     },
   },
 }

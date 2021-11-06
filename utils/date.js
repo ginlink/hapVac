@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 
 export function calcTime(startTime) {
 
-  const baseTime = dayjs(startTime, 'YYYY-MM-DD HH:mm:ss')
+  const baseTime = dayjs(startTime)
 
   const checkTime = baseTime.subtract(getRandom(10, 30), 'minute').add(getRandom(0, 60), 'second')
   const applyTime = baseTime.subtract(getRandom(30, 60), 'minute').add(getRandom(0, 60), 'second')

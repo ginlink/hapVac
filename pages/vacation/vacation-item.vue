@@ -2,17 +2,17 @@
   <view class="vacation-item">
     <view v-if="vacation" class="item">
       <view class="inner-item">
-        <view class="title"> 我的 {{ vacation.type | showType }}申请 </view>
+        <view class="title"> 我的 {{ vacation.type == 1 ? '事假' : '病假' }}申请 </view>
         <view class="time">
-          {{ time }}
+          {{ crossTime }}
         </view>
-        <view class="check" :style="{ color: statusColor }">
-          {{ status }}
+        <view class="check" :style="{ color: checkStatus.color }">
+          {{ checkStatus.label }}
         </view>
       </view>
       <view class="outer-item">
         <view class="time">
-          {{ vacation.start_time | showDay }}
+          {{ vacation.start_time.slice(5, 11) }}
         </view>
         <view class="icon">
           <uni-icons type="arrowright" size="17" color="#9b9b9b"></uni-icons>
@@ -24,6 +24,7 @@
 
 <script>
 import uniIcons from '@/components/uni-icons/uni-icons.vue'
+import { vacationListStatus } from '@/common/misc.js'
 
 export default {
   components: {
@@ -37,23 +38,15 @@ export default {
       },
     },
   },
-  filters: {
-    showDay(time) {
-      return time.slice(5, 11)
-    },
-    showType(type) {
-      switch (type) {
-        case 0:
-          return '事假'
-        case 1:
-          return '病假'
-        default:
-          return '事假'
-      }
-    },
-  },
   computed: {
-    time() {
+    checkStatus() {
+      const vacation = this.vacation
+
+      if (!vacation) return ''
+
+      return vacationListStatus[vacation.status ? vacation.status - 1 : 0]
+    },
+    crossTime() {
       const vacation = this.vacation
 
       console.log('[](vacation):', vacation)
@@ -68,45 +61,15 @@ export default {
       const startStr2Hour = start_time.slice(0, 13)
       const endStr2Hour = end_time.slice(0, 13)
 
-      const hour = this.getHour(startStr2Hour, endStr2Hour)
+      const hour = this.hourDiff(startStr2Hour, endStr2Hour)
       return start + ' 至 ' + end + ' (共' + hour + '小时)'
-    },
-    status() {
-      switch (this.vacation.status) {
-        case 3:
-          return '审批通过'
-        case 4:
-          return '未通过'
-        case 1:
-          return '未审核'
-        case 2:
-          return '已完成'
-      }
-      return '审批通过'
-    },
-    statusColor() {
-      switch (this.vacation.status) {
-        case 3:
-          return '#09BB07'
-        case 4:
-          return '#f00'
-        case 1:
-          return '#3685f1'
-        case 2:
-          return '#9b9b9b'
-      }
-
-      return '#333'
     },
   },
   data() {
     return {}
   },
   methods: {
-    getUnix(str) {
-      return this.$dayjs(str, 'YYYY-MM-DD').unix()
-    },
-    getHour(startStr, endStr) {
+    hourDiff(startStr, endStr) {
       const startObj = this.$dayjs(startStr, 'YYYY-MM-DD HH')
       const endObj = this.$dayjs(endStr, 'YYYY-MM-DD HH')
       let diffHour = endObj.diff(startObj, 'hour')

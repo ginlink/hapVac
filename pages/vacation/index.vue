@@ -52,7 +52,16 @@
 
 <script>
 import VacationItem from './vacation-item'
-import { FORMAT_TO_SECOND } from '@/common/misc.js'
+import {
+  VACATION_DETAIL,
+  FORMAT_TO_SECOND,
+  FORMAT_TO_MINUTE,
+  FORMAT_TO_HOUR,
+  FORMAT_TO_DAY,
+  vacationAdvices,
+  vacationStatus,
+  vacationDetailStatus,
+} from '@/common/misc.js'
 
 export default {
   components: {
@@ -93,18 +102,26 @@ export default {
   },
   methods: {
     fetchVacationList() {
+      const dayjs = this.$dayjs
       this.$http
         .get('/api/vacation')
         .then((res) => {
           //TODO 计划：分页功能
           let list = res.data.list
 
-          // this.vacationList = list
-          list = list.map((item) => {
+          // 先排序
+          list = this.sortVacList(list)
+
+          this.vacationList = list.map((item) => {
+            //挂载swiperAction的显示开关
             item.show = false
+
+            // 格式化时间
+            item.start_time = dayjs.unix(item?.start_time).format(FORMAT_TO_MINUTE)
+            item.end_time = dayjs.unix(item?.end_time).format(FORMAT_TO_MINUTE)
+
             return item
           })
-          this.vacationList = this.sortVacList(list)
         })
         .catch((err) => {
           uni.showToast({
@@ -186,8 +203,10 @@ export default {
     sortVacList(vacations) {
       // 根据时间排序
       vacations.sort((a, b) => {
-        let aTime = this.$dayjs(a.startTime, FORMAT_TO_SECOND).unix()
-        let bTime = this.$dayjs(b.startTime, FORMAT_TO_SECOND).unix()
+        // let aTime = this.$dayjs(a.start_time).unix()
+        // let bTime = this.$dayjs(b.start_time).unix()
+        let aTime = a.start_time
+        let bTime = b.start_time
 
         return bTime - aTime
       })

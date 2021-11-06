@@ -64,7 +64,7 @@
       }
     },
     {
-      "path": "pages/vacation/children/ReportBack",
+      "path": "pages/vacation/cancel-vacation",
       "style": {
         "navigationBarTitleText": "销假"
       }
