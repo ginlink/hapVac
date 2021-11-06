@@ -8,9 +8,69 @@ export const STUDENT_INFO = "STUDENT_INFO"
 
 export const FORMAT_TO_DAY = "YYYY-MM-DD"
 export const FORMAT_TO_HOUR = "YYYY-MM-DD HH"
+export const FORMAT_TO_MINUTE = "YYYY-MM-DD HH:mm"
 export const FORMAT_TO_SECOND = "YYYY-MM-DD HH:mm:ss"
 
 export const USER_INFO = 'USER_INFO'
+
+export const vacationStatus = [
+  {
+    label: '未审核',
+    value: '1',
+  },
+  {
+    label: '未通过',
+    value: '2',
+  },
+  {
+    label: '已完成',
+    value: '3',
+  },
+  {
+    label: '审核通过',
+    value: '4',
+  },
+]
+export const vacationDetailStatus = [
+  {
+    label: '未审核',
+    value: '1',
+    color: '#3685F1',
+  },
+  {
+    label: '审批未通过',
+    value: '2',
+    color: '#ee2222',
+  },
+  {
+    label: '已完成',
+    value: '3',
+    color: '#3685F1',
+  },
+  {
+    label: '审批通过',
+    value: '4',
+    color: '#09BA08',
+  },
+]
+export const vacationAdvices = [
+  {
+    label: '未审核',
+    value: '1',
+  },
+  {
+    label: '未通过',
+    value: '2',
+  },
+  {
+    label: '已完成',
+    value: '3',
+  },
+  {
+    label: '同意',
+    value: '4',
+  },
+]
 
 
 export const VERSION_NODES = [

@@ -176,9 +176,8 @@ export default {
     vacItemClick(item) {
       // 跳转到详情页面
       const id = item.id
-      const action = 'edit'
 
-      this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { id, action } })
+      this.$Router.push({ path: '/pages/vacation/vacation-detail', query: { id } })
     },
     applyVacation() {
       const action = 'add'

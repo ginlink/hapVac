@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { FORMAT_TO_SECOND } from '@/common/misc.js'
+import { FORMAT_TO_SECOND, vacationStatus as status } from '@/common/misc.js'
 import { calcTime } from '@/utils/date.js'
 import { pageOneRules } from './constant.js'
 
@@ -139,42 +139,6 @@ const types = [
   {
     label: '病假',
     value: '2',
-  },
-]
-const status = [
-  {
-    label: '未审核',
-    value: '1',
-  },
-  {
-    label: '未通过',
-    value: '2',
-  },
-  {
-    label: '已完成',
-    value: '3',
-  },
-  {
-    label: '审核通过',
-    value: '4',
-  },
-]
-const advices = [
-  {
-    label: '未审核',
-    value: '1',
-  },
-  {
-    label: '未通过',
-    value: '2',
-  },
-  {
-    label: '已完成',
-    value: '3',
-  },
-  {
-    label: '同意',
-    value: '4',
   },
 ]
 

@@ -15,17 +15,7 @@ export default {
       },
     }
   },
-  methods: {
-    // 销假
-    // reportBack() {
-    // 	console.log('销假');
-    // 	this.$Router.push('/pages/vacation/children/ReportBack')
-    // },
-    // reportContinue() {
-    // 	// 跳出提示，显示信息，请点击假条信息进行续假
-    // 	// this.
-    // },
-  },
+  methods: {},
 }
 </script>
 
