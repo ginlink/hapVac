@@ -58,12 +58,6 @@
       }
     },
     {
-      "path": "pages/vacation/children/ApplyVacation",
-      "style": {
-        "navigationBarTitleText": "假条申请"
-      }
-    },
-    {
       "path": "pages/vacation/children/VactionDetail",
       "style": {
         "navigationBarTitleText": "假条详情"

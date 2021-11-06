@@ -12,13 +12,13 @@
 
     <view class="content">
       <u-swipe-action
+        v-for="(item, index) in vacationList"
         :show="item.show"
         :index="index"
-        v-for="(item, index) in vacationList"
         :key="item.id"
         @open="open"
         :options="options"
-        @click="click"
+        @click="swiperClick"
       >
         <view class="item u-border-bottom">
           <!-- 此层wrap在此为必写的，否则可能会出现标题定位错误 -->
@@ -83,7 +83,8 @@
 </template>
 
 <script>
-import VacationItem from './children/VacationItem'
+// import VacationItem from './children/VacationItem'
+import VacationItem from './vacation-item'
 
 import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/misc.js'
 
@@ -105,10 +106,10 @@ export default {
       })
     },
   },
-  onLoad() {
-    this.initVacList()
-    this.initEvent()
-  },
+  // onLoad() {
+  //   this.initVacList()
+  //   this.initEvent()
+  // },
   onShow() {
     // this.sortVacList()
     // this.vacationList = Object.assign([], this.vacationList)
@@ -180,12 +181,29 @@ export default {
         },
       ],
 
-      vacationList: null,
+      vacationList: [],
     }
   },
-  created() {
+  onLoad() {
     // 请求假条条目
-    this.initVacData()
+    // this.initVacData()
+
+    this.$http
+      .get('/api/vacation')
+      .then((res) => {
+        //TODO 计划：分页功能
+        const list = res.data.list
+
+        this.vacationList = list
+      })
+      .catch((err) => {
+        uni.showToast({
+          title: '服务器异常',
+          icon: 'error',
+          mask: true,
+        })
+        console.log('[](err):', err)
+      })
   },
   methods: {
     // form
@@ -255,7 +273,7 @@ export default {
     // 弹窗
 
     // SwiperAction
-    click(index, index1) {
+    swiperClick(index, index1) {
       console.log('index1', index1)
       let item = this.vacationList[index]
       switch (index1) {
@@ -289,11 +307,10 @@ export default {
 
     // 假条点击事件
     vacItemClick(item) {
-      // const id = item.id
+      const id = item.id
+      const action = 'edit'
 
-      // uni.navigateTo({ url: `/pages/vacation/apply-vacation?id=${id}` })
-
-      this.$Router.push({ url: '/pages/vacation/apply-vacation', query: { id } })
+      this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { id, action } })
     },
     applyVacation() {
       const action = 'add'

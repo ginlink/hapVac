@@ -39,7 +39,15 @@ http.interceptor.response(async (response) => {
 
 	switch (statusCode) {
 		case 401:
-			uni.redirectTo({ url: '/pages/login/index' })
+			uni.showToast({
+				title: '请先登录',
+				icon: 'error',
+				mask: true
+			})
+			setTimeout(() => {
+				// uni.redirectTo({ url: '/pages/login/index' })
+				uni.navigateTo({ url: '/pages/login/index' })
+			}, 1000);
 			break;
 	}
 
