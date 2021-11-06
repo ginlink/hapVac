@@ -1,11 +1,9 @@
 <template>
   <view class="vacation">
     <view class="navbar">
-      <!-- <u-navbar back-text="我的请假" :border-bottom="false" title="我的请假"> -->
       <u-navbar :border-bottom="false" title="我的请假" titleColor="#303133" titleBold>
         <!-- #ifndef MP -->
         <view slot="right">
-          <!-- 右侧菜单功能 -->
           <wechat-menu class="wechat-menu-wrapper"></wechat-menu>
         </view>
         <!-- #endif -->
@@ -166,9 +164,7 @@ export default {
       isSetedRules: false,
       show: false,
       // show: true,
-      // popup
 
-      // SwiperAction
       options: [
         {
           text: '编辑',
@@ -183,7 +179,6 @@ export default {
           },
         },
       ],
-      // SwiperAction
 
       vacationList: null,
     }
@@ -278,7 +273,9 @@ export default {
           const action = 'edit'
           const id = item.id
 
-          uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}&id=${id}` })
+          // uni.navigateTo({ url: `/pages/vacation/apply-vacation?action=${action}&id=${id}` })
+
+          this.$Router.push({ url: '/pages/vacation/apply-vacation', query: { id, action } })
           break
       }
     },
@@ -289,18 +286,19 @@ export default {
         this.vacationList = Object.assign([], this.vacationList)
       })
     },
-    // SwiperAction
 
     // 假条点击事件
     vacItemClick(item) {
-      const id = item.id
+      // const id = item.id
 
-      uni.navigateTo({ url: `/pages/public/pub-edit-vac?id=${id}` })
+      // uni.navigateTo({ url: `/pages/vacation/apply-vacation?id=${id}` })
+
+      this.$Router.push({ url: '/pages/vacation/apply-vacation', query: { id } })
     },
     applyVacation() {
       const action = 'add'
-
-      uni.navigateTo({ url: `/pages/public/pub-edit-vac?action=${action}` })
+      this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { action } })
+      // this.$Router.push({ path: `/pages/vacation/apply-vacation?action=${action}` })
     },
 
     calcOtherTime() {

@@ -5,7 +5,6 @@
       <u-navbar :title="title" :border-bottom="false" titleColor="#303133" titleBold>
         <!-- #ifndef MP -->
         <view slot="right">
-          <!-- 右侧菜单功能 -->
           <wechat-menu class="wechat-menu-wrapper"></wechat-menu>
         </view>
         <!-- #endif -->
@@ -15,15 +14,20 @@
     <view class="content">
       <u-form :model="form" ref="uForm">
         <view v-if="currentIndex == 1" class="form-wrapper">
-          <u-form-item :label-width="labelWidth" label="请假类型" prop="type">
-            <u-input v-model="form.type" type="select" placeholder="请选择" @click="isTypeSelect = !isTypeSelect" />
+          <u-form-item :label-width="labelWidth" label="请假类型" prop="typeLabel">
+            <u-input
+              v-model="form.typeLabel"
+              type="select"
+              placeholder="请选择"
+              @click="isTypeSelected = !isTypeSelected"
+            />
           </u-form-item>
           <u-form-item :label-width="labelWidth" label="开始时间" prop="startTime">
             <u-input
               v-model="form.startTime"
               type="select"
               placeholder="请选择"
-              @click="isStimeSelect = !isStimeSelect"
+              @click="isStartTimeSelected = !isStartTimeSelected"
             />
           </u-form-item>
           <u-form-item :label-width="labelWidth" label="结束时间" prop="endTime">
@@ -31,7 +35,7 @@
               v-model="form.endTime"
               type="select"
               placeholder="请选择"
-              @click="isEtimeSelect = !isEtimeSelect"
+              @click="isEndTimeSelected = !isEndTimeSelected"
             />
           </u-form-item>
           <u-form-item label-position="top" :label-width="labelWidth" label="请假原因" prop="reason">
@@ -54,7 +58,7 @@
               v-model="form.statusLabel"
               type="select"
               placeholder="请选择"
-              @click="isPassSelect = !isPassSelect"
+              @click="isPassSelected = !isPassSelected"
             />
           </u-form-item>
         </view>
@@ -64,10 +68,6 @@
             <u-form-item :label-width="labelWidth" label="审核人(辅导员)" prop="checkName">
               <u-input v-model="form.checkName" type="text" placeholder="请输入审核人" />
             </u-form-item>
-            <!-- <u-form-item :label-width="labelWidth" label="审核意见" prop="checkStatus">
-							<u-input v-model="form.checkStatus" type="select" placeholder="请选择审核意见" @click="pickerAction(1)" />
-							<u-select v-model="isSelectAdvise" mode="single-column" :list="advises" @confirm="confirmAction(1,$event)"></u-select>
-						</u-form-item> -->
             <u-form-item :label-width="labelWidth" label="紧急联系人" prop="urgentContactName">
               <u-input v-model="form.urgentContactName" type="text" placeholder="请填写" />
             </u-form-item>
@@ -91,173 +91,204 @@
     </view>
 
     <!-- 三个选择器 -->
-    <u-select v-model="isTypeSelect" mode="single-column" :list="types" @confirm="typeConfirm"></u-select>
-    <u-picker v-model="isStimeSelect" mode="time" :params="params" @confirm="sTimeConfirm"></u-picker>
-    <u-picker v-model="isEtimeSelect" mode="time" :params="params" @confirm="eTimeConfirm"></u-picker>
+    <u-select v-model="isTypeSelected" mode="single-column" :list="types" @confirm="typeConfirm"></u-select>
+    <u-picker v-model="isStartTimeSelected" mode="time" :params="params" @confirm="sTimeConfirm"></u-picker>
+    <u-picker v-model="isEndTimeSelected" mode="time" :params="params" @confirm="eTimeConfirm"></u-picker>
     <u-select
-      v-model="isPassSelect"
+      v-model="isPassSelected"
       mode="single-column"
       :list="status"
       @confirm="statusConfirm"
       :default-value="[3]"
     ></u-select>
-
-    <u-toast ref="uToast" />
   </view>
 </template>
 
 <script>
 import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY, MAXLENGTH } from '@/common/misc.js'
+import { calcTime } from '@/utils/date.js'
+// 表单验证规则
+const pageOneRules = {
+  typeLabel: [
+    {
+      required: true,
+      message: '请选择假条类型',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  startTime: [
+    {
+      required: true,
+      message: '请选择开始时间',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  endTime: [
+    {
+      required: true,
+      message: '请选择结束时间',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  reason: [
+    {
+      required: true,
+      message: '请填写理由',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  statusLabel: [
+    {
+      required: true,
+      message: '请选择假条状态',
+      trigger: ['blur', 'change'],
+    },
+  ],
+
+  checkName: [
+    {
+      required: true,
+      message: '请输入审核人（辅导员）',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  urgentContactName: [
+    {
+      required: true,
+      message: '请填写紧急联系人',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  urgentContactTel: [
+    {
+      required: true,
+      message: '请填写紧急联系电话',
+      trigger: ['blur', 'change'],
+    },
+  ],
+}
+const pageTwoRules = {
+  checkName: [
+    {
+      required: true,
+      message: '请输入审核人（辅导员）',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  urgentContactName: [
+    {
+      required: true,
+      message: '请填写紧急联系人',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  urgentContactTel: [
+    {
+      required: true,
+      message: '请填写紧急联系电话',
+      trigger: ['blur', 'change'],
+    },
+  ],
+}
+
+// form字段
+const form = {
+  type: 1,
+  typeLabel: '',
+  startTime: '',
+  endTime: '',
+  checkTime: '',
+  applyTime: '',
+
+  reason: '',
+  isTellParent: false,
+  isLeaveSchool: true,
+  status: '',
+  statusLabel: '',
+
+  checkName: '',
+
+  urgentContactName: '',
+  urgentContactTel: '',
+}
+
+// 状态
+const types = [
+  {
+    label: '事假',
+    value: '1',
+  },
+  {
+    label: '病假',
+    value: '2',
+  },
+]
+const status = [
+  {
+    label: '未审核',
+    value: '1',
+  },
+  {
+    label: '未通过',
+    value: '2',
+  },
+  {
+    label: '已完成',
+    value: '3',
+  },
+  {
+    label: '审核通过',
+    value: '4',
+  },
+]
+const advices = [
+  {
+    label: '未审核',
+    value: '1',
+  },
+  {
+    label: '未通过',
+    value: '2',
+  },
+  {
+    label: '已完成',
+    value: '3',
+  },
+  {
+    label: '同意',
+    value: '4',
+  },
+]
 
 export default {
   data() {
     return {
-      // 辅助变量
       currentIndex: 1,
-      // 辅助变量
-
-      // global
       isPassed: false,
       title: '申请假条', // 导航栏标题
       submitTitle: '提交',
-      // global
 
       // form
       isInitDetialForm: false,
       isSelectAdvise: false,
       detailForm: {
         checkName: '',
-        checkStatus: '',
 
         urgentContactName: '',
         urgentContactTel: '',
-
-        // checkTime
-        // applyTime
       },
-      detailFormRules: {
-        checkName: [
-          {
-            required: true,
-            message: '请输入审核人（辅导员）',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        checkStatus: [
-          {
-            required: true,
-            message: '请选择审核意见',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        urgentContactName: [
-          {
-            required: true,
-            message: '请填写紧急联系人',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        urgentContactTel: [
-          {
-            required: true,
-            message: '请填写紧急联系电话',
-            trigger: ['blur', 'change'],
-          },
-        ],
-      },
+      pageTwoRules: pageTwoRules,
 
       textareaHeight: 100,
       labelWidth: '30%',
-      rules: {
-        type: [
-          {
-            required: true,
-            message: '请选择假条类型',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        startTime: [
-          {
-            required: true,
-            message: '请选择开始时间',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        endTime: [
-          {
-            required: true,
-            message: '请选择结束时间',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        reason: [
-          {
-            required: true,
-            message: '请填写理由',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        statusLabel: [
-          {
-            required: true,
-            message: '请选择假条状态',
-            trigger: ['blur', 'change'],
-          },
-        ],
-
-        checkName: [
-          {
-            required: true,
-            message: '请输入审核人（辅导员）',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        checkStatus: [
-          {
-            required: true,
-            message: '请选择审核意见',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        urgentContactName: [
-          {
-            required: true,
-            message: '请填写紧急联系人',
-            trigger: ['blur', 'change'],
-          },
-        ],
-        urgentContactTel: [
-          {
-            required: true,
-            message: '请填写紧急联系电话',
-            trigger: ['blur', 'change'],
-          },
-        ],
-      },
-      form: {
-        type: '',
-        startTime: '',
-        endTime: '',
-        reason: '',
-        isTellParent: false,
-        isLeaveSchool: true,
-        status: '',
-        statusLabel: '',
-
-        checkName: '',
-        checkStatus: '',
-
-        urgentContactName: '',
-        urgentContactTel: '',
-      },
-      // form
+      pageOneRules: pageOneRules,
+      form: form,
 
       // picker是否显示
-      isTypeSelect: false,
-      isStimeSelect: false,
-      isEtimeSelect: false,
-      isPassSelect: false,
-      // isTypeSelect: false,
+      isTypeSelected: false,
+      isStartTimeSelected: false,
+      isEndTimeSelected: false,
+      isPassSelected: false,
 
       // picker参数
       params: {
@@ -268,127 +299,161 @@ export default {
         minute: true,
         second: false,
       },
-      types: [
-        {
-          label: '事假',
-          value: '0',
-        },
-        {
-          label: '病假',
-          value: '1',
-        },
-      ],
-      status: [
-        {
-          label: '未审核',
-          value: '0',
-        },
-        {
-          label: '未通过',
-          value: '1',
-        },
-        {
-          label: '已完成',
-          value: '2',
-        },
-        {
-          label: '审核通过',
-          value: '3',
-        },
-      ],
-      advises: [
-        {
-          label: '未审核',
-          value: '0',
-        },
-        {
-          label: '未通过',
-          value: '1',
-        },
-        {
-          label: '已完成',
-          value: '2',
-        },
-        {
-          label: '同意',
-          value: '3',
-        },
-      ],
-      // picker参数
+      types: types,
+      status: status,
 
       action: '',
       vacation: null,
       vacationDetail: null,
     }
   },
-  onLoad(params) {
-    try {
-      this.initData()
+  // onLoad(params) {
+  //   try {
+  //     this.initData()
 
-      let action = params.action
-      this.action = action
-      switch (action) {
-        case 'add':
-          this.title = '申请假条'
-          this.submitTitle = '提交'
+  //     const { action, id } = this.$Route.query
 
-          // 初始化form
-          let maxId = this.vacationDetail.maxId
-          let tmp = this.$u.deepClone(this.vacationDetail.data.clone)
-          tmp.id = ++maxId
-          this.vacation = tmp
-          this.freshForm(this.vacation)
-          // 初始化form
+  //     if (!action) return
 
-          break
-        case 'edit':
-          this.title = '续假'
-          this.submitTitle = '保存'
+  //     this.action = action
+  //     switch (action) {
+  //       case 'add':
+  //         this.title = '申请假条'
+  //         this.submitTitle = '提交'
 
-          let id = parseInt(params.id)
-          if (!id) {
-            this.error('程序出错', {
-              back: true,
-            })
-            return
+  //         // 初始化form
+  //         let maxId = this.vacationDetail.maxId
+  //         let tmp = this.$u.deepClone(this.vacationDetail.data.clone)
+  //         tmp.id = ++maxId
+  //         this.vacation = tmp
+  //         this.freshForm(this.vacation)
+  //         // 初始化form
+
+  //         break
+  //       case 'edit':
+  //         this.title = '续假'
+  //         this.submitTitle = '保存'
+
+  //         if (!id) return
+
+  //         this.vacation = this.findVac(id)
+  //         this.freshForm(this.vacation)
+
+  //         console.log('[onLoad]vac:', this.vacation)
+  //         break
+  //     }
+  //   } catch (e) {
+  //     this.error(e, {
+  //       back: true,
+  //     })
+  //   }
+  // },
+  onReady() {
+    this.$nextTick(function () {
+      this.$refs.uForm.setRules(this.pageOneRules)
+    })
+  },
+  onLoad() {
+    const { action, id } = this.$Route.query
+
+    console.log('[created](this.$Route):', this.$Route)
+
+    if (!action) return
+
+    //保留状态
+    this.action = action
+
+    if (action == 'add') {
+      // 生成数据
+      const newForm = {
+        type: 1,
+        typeLabel: types.find((item) => item.value == 1)?.label,
+        startTime: '2021-11-05 23:23:07',
+        endTime: '2021-11-05 23:23:07',
+        reason: '原因',
+        isTellParent: false,
+        isLeaveSchool: true,
+        status: 1,
+        statusLabel: status.find((item) => item.value == 1)?.label,
+        checkName: '审核人',
+        urgentContactName: '紧急联系人',
+        urgentContactTel: '138...39',
+      }
+
+      console.log('[created](new):', newForm)
+
+      this.form = { ...newForm }
+    } else if (action == 'edit') {
+      if (!id) {
+        return uni.showToast({
+          title: '未知错误',
+          icon: 'error',
+          mask: true,
+        })
+      }
+      /**
+       * "apply_time": "2021-11-05T05:09:26.000Z",
+        "start_time": "2021-11-05T05:09:26.000Z",
+        "end_time": "2021-11-05T05:09:26.000Z",
+        "type": null,
+        "reason": null,
+        "is_tell_parent": false,
+        "is_leave_school": true,
+        "urgent_name": null,
+        "urgent_tel": null,
+        "other": null,
+        "check_name": null,
+        "check_time": "2021-11-05T05:09:26.000Z",
+        "status": "pass",
+       */
+
+      // 请求数据
+      this.$http
+        .get('/api/vacation/' + id)
+        .then((res) => {
+          const data = res.data
+
+          const newForm = {
+            type: data.type,
+            typeLabel: types.find((item) => item.value == data.type)?.label,
+            startTime: data.start_time,
+            endTime: data.end_time,
+            reason: data.reason,
+            isTellParent: data.is_tell_parent,
+            isLeaveSchool: data.is_leave_school,
+            status: data.status,
+            statusLabel: status.find((item) => item.value == data.status)?.label,
+            checkName: data.check_name,
+            urgentContactName: data.urgent_name,
+            urgentContactTel: data.urgent_tel,
           }
 
-          this.vacation = this.findVac(id)
-          this.freshForm(this.vacation)
+          this.form = { ...newForm }
 
-          console.log('[onLoad]vac:', this.vacation)
-          break
-      }
-    } catch (e) {
-      this.error(e, {
-        back: true,
+          // this.form.type = data.type
+          // this.form.typeLabel = types.find((item) => item.value == data.type)?.label
+          // this.form.startTime = data.start_time
+          // this.form.endTime = data.end_time
+          // this.form.reason = data.reason
+          // this.form.isTellParent = data.is_tell_parent
+          // this.form.isLeaveSchool = data.is_leave_school
+          // this.form.status = data.status
+          // this.form.statusLabel = status.find((item) => item.value == data.status)?.label
+          // this.form.checkName = data.check_name
+          // this.form.urgentContactName = data.urgent_name
+          // this.form.urgentContactTel = data.urgent_tel
+        })
+        .catch((err) => console.log('[/api/vacation](err):', err))
+    } else {
+      uni.showToast({
+        title: '未知错误',
+        icon: 'error',
+        mask: true,
       })
     }
   },
-  onReady() {
-    this.$nextTick(function () {
-      this.$refs.uForm.setRules(this.rules)
-      // this.$refs.detailForm.setRules(this.detailFormRules);
-    })
-  },
-  // watch: {
-  // 	isPassed(n, o) {
-  // 		if (n) {
-  // 			this.isPassed = false
 
-  // 		}
-  // 	},
-  // },
   methods: {
-    // form
-    confirmAction(action, data) {
-      switch (action) {
-        case 1:
-          // 审核意见
-          this.form.checkStatus = data[0].label
-          break
-      }
-    },
     pickerAction(action) {
       switch (action) {
         case 1:
@@ -409,10 +474,6 @@ export default {
           // 第二页
           this.currentIndex = 2
           this.isLookNext = true
-          // this.$nextTick(function() {
-          // 	this.$refs.detailForm.setRules(this.detailFormRules);
-
-          // })
           break
       }
     },
@@ -496,29 +557,15 @@ export default {
       this.vacationDetail = uni.getStorageSync(VACATIONDETAIL) // 更新数据
     },
     freshVac(form, type = '') {
-      // 处理相同，这里不能像下面这样赋值，因为detail包含form
-      // this.vacation.detail = this.form
-      // 处理不相同
-      // if (type == 'add') {  // 如果为新增，则需要手动赋值
-      // 	this.vacation.detail.type = this.form.type
-      // 	this.vacation.detail.startTime = this.form.startTime
-      // 	this.vacation.detail.endTime = this.form.endTime
-      // 	this.vacation.detail.reason = this.form.reason
-      // 	this.vacation.detail.isTellParent = this.form.isTellParent
-      // 	this.vacation.detail.isLeaveSchool = this.form.isLeaveSchool
-      // }
-
       // 处理特殊，值引用
       this.vacation.detail.status = parseInt(this.form.status)
 
       return this.vacation
     },
     freshForm(vac) {
-      this.$log(vac, 'vac')
-
       // 处理相同
       this.form = vac.detail
-      // 处理不相同
+
       this.form.status = vac.detail.status
       switch (this.form.status) {
         case 0:
@@ -534,12 +581,6 @@ export default {
           this.form.statusLabel = '审核通过'
           break
       }
-      // this.form.type = vac.detail.type
-      // this.form.startTime = vac.detail.startTime
-      // this.form.endTime = vac.detail.endTime
-      // this.form.reason = vac.detail.reason
-      // this.form.isTellParent = vac.detail.isTellParent
-      // this.form.isLeaveSchool = vac.detail.isLeaveSchool
       return this.form
     },
 
@@ -570,23 +611,56 @@ export default {
       const self = this
       switch (this.action) {
         case 'add':
-          this.freshVac(this.form)
           // 修改数据，检查时间和申请时间
-          this.$log(this.vacation, 'this.vacation-before')
-          this.vacation = actionCalcTime(this.vacation)
-          this.$log(this.vacation, 'this.vacation')
+          const form = this.form
+          const computedTime = calcTime(form.startTime)
+          const vacation = {
+            apply_time: computedTime.applyTime,
+            start_time: form.startTime,
+            end_time: form.endTime,
+            type: form.type,
+            reason: form.reason,
+            is_tell_parent: form.isTellParent,
+            is_leave_school: form.isLeaveSchool,
+            urgent_name: form.urgentContactName,
+            urgent_tel: form.urgentContactTel,
+            other: form.other,
+            check_name: form.checkName,
+            check_time: computedTime.checkTime,
+            status: form.status,
+          }
 
-          this.vacationDetail.data.list.push(this.vacation)
-          this.vacationDetail.maxId++
-          this.save()
+          this.$http
+            .post('/api/vacation', vacation)
+            .then((res) => {
+              uni.showToast({
+                title: '创建成功',
+                icon: 'success',
+                mask: true,
+              })
 
-          uni.$emit('refreshVacDetailAction')
+              setTimeout(() => {
+                uni.navigateBack({ delta: 1 })
+              }, 1000)
+            })
+            .catch((err) => {
+              uni.showToast({
+                title: '创建失败',
+                icon: 'error',
+                mask: true,
+              })
+              console.log('[/api/vacation](err):', err)
+            })
 
-          this.success('创建成功，假条编号为：' + this.vacation.id, {}, () => {
-            uni.navigateBack({})
-          })
+          // this.vacationDetail.data.list.push(this.vacation)
+          // this.vacationDetail.maxId++
+          // this.save()
 
-          console.log('vacationDetail:', this.vacationDetail)
+          // uni.$emit('refreshVacDetailAction')
+
+          // this.success('创建成功，假条编号为：' + this.vacation.id, {}, () => {
+          //   uni.navigateBack({})
+          // })
           break
         case 'edit':
           console.log('[edited]vac:', this.vacation)
@@ -606,37 +680,20 @@ export default {
           })
           break
       }
-      function actionCalcTime(vac) {
-        let times = calcTime(vac)
 
-        vac.detail.checkTime = times.checkTime
-        vac.detail.applyTime = times.applyTime
-        return vac
-      }
+      // function actionCalcTime(startTime) {
+      //   const times = calcTime(startTime)
 
-      function calcTime(vac) {
-        if (!vac) return
-        let startTime = vac.detail.startTime
-        startTime = self.$dayjs(startTime, 'YYYY-MM-DD HH:mm:ss')
-
-        let checkTime = startTime.subtract(getRandom(10, 30), 'minute').add(getRandom(0, 60), 'second')
-        let applyTime = startTime.subtract(getRandom(30, 60), 'minute').add(getRandom(0, 60), 'second')
-
-        return {
-          checkTime: checkTime.format(FORMATSECOND, 'startTime'),
-          applyTime: applyTime.format(FORMATSECOND, 'startTime'),
-        }
-
-        function getRandom(start, end) {
-          return Math.floor(Math.random() * (end - 10) + start)
-        }
-      }
+      //   vac.detail.checkTime = times.checkTime
+      //   vac.detail.applyTime = times.applyTime
+      //   return vac
+      // }
     },
 
     // picker时间和select回调
     typeConfirm(params) {
-      // console.log('typeConfirm-params:', params);
-      this.form.type = params && params[0] && params[0].label
+      this.form.type = params[0] && params[0].value
+      this.form.typeLabel = params[0] && params[0].label
     },
     sTimeConfirm(params) {
       this.form.startTime = this.formatDate(params)
@@ -662,13 +719,13 @@ export default {
     // picker时间和select回调
 
     typeSelect() {
-      this.isTypeSelect = true
+      this.isTypeSelected = true
     },
     sTimeSelect() {
-      this.isStimeSelect = true
+      this.isStartTimeSelected = true
     },
     eTimeSelect() {
-      this.isEtimeSelect = true
+      this.isEndTimeSelected = true
     },
 
     commit() {

@@ -12,8 +12,6 @@
       >
         <!-- #ifndef MP -->
         <view slot="right">
-          <!-- 右侧菜单功能 -->
-          <!-- <wechat-menu class="wechat-menu-wrapper" @menu="menuShow=true" @close="action(2)"></wechat-menu> -->
           <wechat-menu class="wechat-menu-wrapper"></wechat-menu>
         </view>
         <!-- #endif -->

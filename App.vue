@@ -16,9 +16,9 @@ export default {
 
     this.checkSession()
 
-    // this.initData() // 初始化全局信息
+    this.initCenterMenu()
 
-    // this.initCenterMenu()
+    // this.initData() // 初始化全局信息
 
     // this.initAppNum()
 
@@ -35,6 +35,51 @@ export default {
     console.log('App Hide')
   },
   methods: {
+    initCenterMenu() {
+      this.$http
+        .get('/api/application')
+        .then((res) => {
+          const data = res.data ?? []
+
+          let utilList = { open_num: 0, data: [] }
+          let studyList = { open_num: 0, data: [] }
+          let otherList = { open_num: 0, data: [] }
+
+          data.map((item) => {
+            switch (item.type) {
+              case 'util':
+                utilList.data.push(item)
+
+                if (item.is_open) ++utilList.open_num
+                break
+              case 'study':
+                studyList.data.push(item)
+
+                if (item.is_open) ++studyList.open_num
+                break
+              case 'other':
+                otherList.data.push(item)
+
+                if (item.is_open) ++otherList.open_num
+                break
+            }
+          })
+
+          // 区分类别
+          /**
+           * {
+           *  utilList:{open_num: 1, data: []}
+           *  studyList:{open_num: 1, data: []}
+           *  otherList:{open_num: 1, data: []}
+           * }
+           */
+
+          this.$store.commit('updateCenterMenu', { utilList, studyList, otherList })
+        })
+        .catch((err) => {
+          console.log('err:func(created)(stu)', err)
+        })
+    },
     checkSession() {
       // 检查用户session是否过期，过期则跳转登录页面，更新个人头像等信息
       uni.checkSession({
@@ -101,20 +146,6 @@ export default {
           console.log('err:func(applications)(created)', err)
         })
     },
-    initCenterMenu() {
-      this.$http
-        // .get('/api/centermenu_v2')
-        .get('/api/centermenu_v2_backup')
-        .then((res) => {
-          const data = res.data.data ?? {}
-
-          this.$store.commit('updateCenterMenu', data)
-          uni.hideLoading()
-        })
-        .catch((err) => {
-          console.log('err:func(created)(stu)', err)
-        })
-    },
     // this.initVacation
     initData() {
       if (!uni.getStorageSync(VACATIONDETAIL)) {
@@ -145,6 +176,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/components/uview-ui/index.scss';
+/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
+@import './common/uni.css';
+
 // 通用form样式
 .form-wrapper {
   padding: 0 30rpx 0;

@@ -4,9 +4,21 @@
   },
   "pages": [
     {
+      "path": "pages/vacation/index",
+      "style": {
+        "navigationBarTitleText": "我的假条"
+      }
+    },
+    {
       "path": "pages/login/index",
       "style": {
         "navigationBarTitleText": "登陆"
+      }
+    },
+    {
+      "path": "pages/student-center/index",
+      "style": {
+        "navigationBarTitleText": "学生中心"
       }
     },
     {
@@ -34,24 +46,15 @@
       }
     },
     {
-      "path": "pages/student-center/index",
-      "style": {
-        "navigationBarTitleText": "学生中心"
-      }
-    },
-    {
       "path": "pages/console/download",
       "style": {
         "navigationBarTitleText": "下载"
       }
     },
     {
-      "path": "pages/public/pub-edit-vac"
-    },
-    {
-      "path": "pages/vacation/index",
+      "path": "pages/vacation/apply-vacation",
       "style": {
-        "navigationBarTitleText": "我的假条"
+        "navigationBarTitleText": "申请假条"
       }
     },
     {

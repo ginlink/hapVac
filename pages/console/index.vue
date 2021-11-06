@@ -24,40 +24,35 @@
         <u-notice-bar mode="vertical" :list="noticeList" :duration="3000" @click="noticeClick"></u-notice-bar>
       </view>
 
-      <view class="u-page">
-        <!-- 目前只有home生效 -->
-        <view class="home">
-          <view class="box-wrapper">
-            <view class="box">
-              <view class="box-item" v-for="item in applications" @click="action(item.id)" :key="item.id">
-                <view class="icon">
-                  <image :src="item.icon"></image>
-                </view>
-                <view class="title">
-                  {{ item.name }}
-                </view>
-              </view>
-              <view class="box-item" @click="localAction(1)">
-                <view class="icon">
-                  <!-- <image src="@/static/console/more.png"></image> -->
-                  <u-icon name="setting" size="118"></u-icon>
-                </view>
-                <view class="title"> 设置 </view>
-              </view>
-              <view class="box-item" @click="localAction(2)">
-                <view class="icon">
-                  <!-- <image src="@/static/console/more.png"></image> -->
-                  <u-icon name="file-text" size="118"></u-icon>
-                </view>
-                <view class="title"> 更新日志 </view>
-              </view>
-              <view class="box-item">
-                <view class="icon">
-                  <image src="@/static/console/more.png"></image>
-                </view>
-                <view class="title"> 更多敬请期待... </view>
-              </view>
+      <view class="app-wrapper">
+        <view class="app">
+          <view class="app-item" v-for="item in applications" @click="action(item.id)" :key="item.id">
+            <view class="icon">
+              <image :src="item.icon"></image>
             </view>
+            <view class="title">
+              {{ item.name }}
+            </view>
+          </view>
+          <view class="app-item" @click="localAction(1)">
+            <view class="icon">
+              <!-- <image src="@/static/console/more.png"></image> -->
+              <u-icon name="setting" size="118"></u-icon>
+            </view>
+            <view class="title"> 设置 </view>
+          </view>
+          <view class="app-item" @click="localAction(2)">
+            <view class="icon">
+              <!-- <image src="@/static/console/more.png"></image> -->
+              <u-icon name="file-text" size="118"></u-icon>
+            </view>
+            <view class="title"> 更新日志 </view>
+          </view>
+          <view class="app-item">
+            <view class="icon">
+              <image src="@/static/console/more.png"></image>
+            </view>
+            <view class="title"> 更多敬请期待... </view>
           </view>
         </view>
       </view>
@@ -127,37 +122,35 @@ export default {
 .console {
   background-color: $wm-bg-fff;
   min-height: 100vh;
-  .home {
-    .box-wrapper {
-      margin-top: 60rpx;
-      .box {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 0 30rpx;
-        /* gap: 30rpx; */
-        /* row-gap: 60rpx; */
+  .app-wrapper {
+    margin-top: 60rpx;
+    .app {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 30rpx;
+      /* gap: 30rpx; */
+      /* row-gap: 60rpx; */
+    }
+    .app-item {
+      /* flex: 1; */
+      width: 47%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30rpx 0;
+      .icon {
+        // width: 160rpx;
+        // height: 160rpx;
+        width: 120rpx;
+        height: 120rpx;
       }
-      .box-item {
-        /* flex: 1; */
-        width: 47%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 30rpx 0;
-        .icon {
-          // width: 160rpx;
-          // height: 160rpx;
-          width: 120rpx;
-          height: 120rpx;
-        }
-        image {
-          width: 100%;
-          height: 100%;
-          /* border-radius: 50%; */
-        }
-        .title {
-          margin-top: 15rpx;
-        }
+      image {
+        width: 100%;
+        height: 100%;
+        /* border-radius: 50%; */
+      }
+      .title {
+        margin-top: 15rpx;
       }
     }
   }
