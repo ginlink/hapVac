@@ -200,25 +200,53 @@ export default {
 
     if (action == 'add') {
       console.log('[onLoad](新增假条):')
-      // 生成数据
-      const newForm = {
-        type: 1,
-        typeLabel: types.find((item) => item.value == 1)?.label,
-        startTime: '2021-11-05 23:23:07',
-        endTime: '2021-11-05 23:23:07',
-        reason: '原因',
-        isTellParent: false,
-        isLeaveSchool: true,
-        status: 1,
-        statusLabel: status.find((item) => item.value == 1)?.label,
-        checkName: '审核人',
-        urgentContactName: '紧急联系人',
-        urgentContactTel: '138...39',
-      }
+      const that = this
 
-      console.log('[created](new):', newForm)
+      this.$http
+        .get('/api/user')
+        .then((res) => {
+          const { urgent_name, urgent_tel, check_name, reason } = res.data
+          // const now = () => new Date().getTime()
+          const now = new Date()
+          const year = now.getFullYear()
+          const month = now.getMonth()
+          const day = now.getDate()
 
-      this.form = { ...newForm }
+          console.log('[](year, month, day):', year, month, day)
+
+          const am = new Date(year, month, day, 8)
+          const pm = new Date(year, month, day, 20)
+
+          // 生成数据
+          const newForm = {
+            type: 1,
+            typeLabel: that.types.find((item) => item.value == 1)?.label,
+            startTime: dayjs(am.getTime()).format(FORMAT_TO_MINUTE),
+            endTime: dayjs(pm.getTime()).format(FORMAT_TO_MINUTE),
+            reason: reason,
+            isTellParent: false,
+            isLeaveSchool: true,
+            status: 1,
+            statusLabel: status.find((item) => item.value == 1)?.label,
+            checkName: check_name,
+            urgentContactName: urgent_name,
+            urgentContactTel: urgent_tel,
+          }
+
+          console.log('[created](new):', newForm)
+
+          this.form = { ...newForm }
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: '获取用户信息失败',
+            icon: 'success',
+            mask: true,
+          })
+          setTimeout(() => {
+            this.$Router.push('/pages/login/index')
+          }, 1000)
+        })
     } else if (action == 'edit') {
       console.log('[onLoad](编辑假条):', id)
       if (!id) {
