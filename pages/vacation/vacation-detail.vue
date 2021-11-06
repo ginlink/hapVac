@@ -10,15 +10,16 @@
       </u-navbar>
     </view>
 
-    <view v-if="vacation" class="content" :class="{ 'bottom-space': checkStatus.value == 4 }">
+    <!-- <view v-if="vacation" class="content" :class="{ 'bottom-space': checkStatus.value == 4 }"> -->
+    <view class="content u-skeleton" :class="{ 'bottom-space': checkStatus.value == 4 }">
       <view class="status">
         <view class="status-content">
-          <view class="icon" :style="{ backgroundColor: checkStatus.color }">
+          <view class="icon u-skeleton-circle" :style="{ backgroundColor: checkStatus.color }">
             <u-icon name="checkbox-mark" :color="'#fff'" size="112"></u-icon>
           </view>
-          <text class="title">{{ checkStatus.label }}</text>
+          <text class="title u-skeleton-rect">{{ checkStatus.label }}</text>
         </view>
-        <view class="check">
+        <view class="check u-skeleton-rect">
           <view class="title"> 审批情况 </view>
           <view class="check-name">
             <text class="name">{{ vacation.check_name }}审批</text>
@@ -26,7 +27,7 @@
           </view>
           <view class="check-status"> 审批意见: {{ checkAdviceLabel }} </view>
         </view>
-        <view class="vacation">
+        <view class="vacation u-skeleton-rect">
           <view class="vacation-header">
             <text class="title">请假详情</text>
             <text class="apply-time"> 申请时间{{ vacation.apply_time }} </text>
@@ -93,9 +94,12 @@
       <vac-footer v-if="checkStatus.value == 4" @action="action"></vac-footer>
     </view>
 
-    <view v-else class="no-data">
+    <!-- <view v-else-if="!vacation && loaded" class="no-data"> -->
+    <view v-if="!vacation && loaded" class="no-data">
       <view class="text"> 无此假条数据！ </view>
     </view>
+
+    <u-skeleton :loading="loading" :animation="true" bgColor="#FFF"></u-skeleton>
   </view>
 </template>
 
@@ -145,17 +149,10 @@ export default {
 
       return dayDiff + '天'
     },
-    isPassed() {
-      if (!this.vacation) return
-
-      return this.vacation.status == 3
-    },
     checkStatus() {
       const vacation = this.vacation
 
-      if (!vacation) return ''
-
-      return vacationDetailStatus[vacation.status ? vacation.status - 1 : 0]
+      return vacationDetailStatus[vacation?.status ? vacation.status - 1 : 4]
     },
     checkStatusLabel() {
       const vacation = this.vacation
@@ -174,11 +171,22 @@ export default {
   },
   data() {
     return {
+      loaded: false,
+      loading: false,
       currentId: undefined,
       vacationStatus: vacationStatus,
       vacationAdvices: vacationAdvices,
 
-      vacation: null,
+      vacation: {
+        check_name: '李旺',
+        check_time: '2021-11-06 20:18:00',
+        apply_time: '2021-11-06 19:17:03',
+        start_time: '2021-11-06 09:00',
+        end_time: '2021-11-06 20:00',
+        reason: '身体不适',
+        urgent_name: '王丽华',
+        urgent_tel: '13897004370',
+      },
     }
   },
   methods: {
@@ -192,6 +200,8 @@ export default {
           mask: true,
         })
       }
+      // this.loading = true
+      const that = this
 
       const dayjs = this.$dayjs
       this.$http
@@ -204,6 +214,9 @@ export default {
           data.check_time = dayjs.unix(data?.check_time).format(FORMAT_TO_SECOND)
 
           this.vacation = data
+          // setTimeout(() => {
+          //   that.loading = false
+          // }, 600)
 
           console.log('[](vacation):', this.vacation)
         })
@@ -213,7 +226,11 @@ export default {
             icon: 'error',
             mask: true,
           })
+          that.loading = false
           console.log('[/api/vacation](err):', err)
+        })
+        .finally(() => {
+          this.loaded = true
         })
     },
     action(flag) {
@@ -265,7 +282,6 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: red;
           border-radius: 50%;
         }
         .title {
