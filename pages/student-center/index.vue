@@ -120,7 +120,7 @@
 import StuInfo from './student-info'
 import item from './menu'
 import { StuInfoData } from '@/common/mock-data/vac.js'
-import { STUINFO } from '@/common/misc.js'
+import { STUDENT_INFO } from '@/common/misc.js'
 import backIconName from '@/static/home/home.png'
 
 export default {
@@ -247,7 +247,7 @@ export default {
       if (!isPassed) return
       // 保存数据
       this.$log(this.form)
-      uni.setStorageSync(STUINFO, this.form)
+      uni.setStorageSync(STUDENT_INFO, this.form)
       this.isChangePop = false
 
       this.stuInfo = this.$u.deepClone(this.form)
@@ -279,14 +279,14 @@ export default {
 
           // 写入本地
           self.stuInfo.icon = tmp
-          uni.setStorageSync(STUINFO, self.stuInfo)
+          uni.setStorageSync(STUDENT_INFO, self.stuInfo)
           // console.log(JSON.stringify(res.tempFilePaths));
         },
       })
     },
     // 子组件
     initStuInfo() {
-      let tmp = uni.getStorageSync(STUINFO)
+      let tmp = uni.getStorageSync(STUDENT_INFO)
       if (tmp) {
         this.stuInfo = tmp
         this.form = this.$u.deepClone(tmp)

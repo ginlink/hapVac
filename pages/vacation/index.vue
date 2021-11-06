@@ -86,7 +86,7 @@
 // import VacationItem from './children/VacationItem'
 import VacationItem from './vacation-item'
 
-import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/misc.js'
+import { VACATION_DETAIL, FORMAT_TO_SECOND, FORMAT_TO_HOUR, FORMAT_TO_DAY } from '@/common/misc.js'
 
 export default {
   components: {
@@ -239,11 +239,11 @@ export default {
     // form
 
     saveVac() {
-      let tmp = uni.getStorageSync(VACATIONDETAIL)
+      let tmp = uni.getStorageSync(VACATION_DETAIL)
       if (!tmp) return this.$log('wran:(本地无数据)')
 
       tmp.data.list = this.vacationList
-      uni.setStorageSync(VACATIONDETAIL, tmp)
+      uni.setStorageSync(VACATION_DETAIL, tmp)
     },
     delVac() {
       if (this.currentIndex == -1) return
@@ -352,8 +352,8 @@ export default {
         let applyTime = startTime.subtract(getRandom(30, 60), 'minute').add(getRandom(0, 60), 'second')
 
         return {
-          checkTime: checkTime.format(FORMATSECOND, 'startTime'),
-          applyTime: applyTime.format(FORMATSECOND, 'startTime'),
+          checkTime: checkTime.format(FORMAT_TO_SECOND, 'startTime'),
+          applyTime: applyTime.format(FORMAT_TO_SECOND, 'startTime'),
         }
 
         function getRandom(start, end) {
@@ -361,24 +361,23 @@ export default {
         }
       }
     },
-    sortVacList() {
+    sortVacList(vacations) {
       // 根据时间排序
-      // 开始时间
-      this.vacationList = this.vacationList.sort((a, b) => {
-        let aTime = this.$dayjs(a.detail.startTime, FORMATSECOND).unix()
-        let bTime = this.$dayjs(b.detail.startTime, FORMATSECOND).unix()
+      vacations.sort((a, b) => {
+        let aTime = this.$dayjs(a.startTime, FORMAT_TO_SECOND).unix()
+        let bTime = this.$dayjs(b.startTime, FORMAT_TO_SECOND).unix()
 
         return bTime - aTime
       })
 
-      // this.$log(this.vacationList, 'vacationList')
+      return vacations
     },
     initVacList() {
       const self = this
 
       this.vacationList = [] // 置空
 
-      let vacationDetail = uni.getStorageSync(VACATIONDETAIL)
+      let vacationDetail = uni.getStorageSync(VACATION_DETAIL)
       // 防止读取不到数据
       if (!vacationDetail)
         return setTimeout(() => {
@@ -396,7 +395,7 @@ export default {
         this.vacationList = tmp
         vacationDetail.data.list = tmp
 
-        uni.setStorageSync(VACATIONDETAIL, vacationDetail)
+        uni.setStorageSync(VACATION_DETAIL, vacationDetail)
       }
 
       this.$log(this.vacationList, 'this.vacationList1')

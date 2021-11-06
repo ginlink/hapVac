@@ -4,7 +4,7 @@
 // 	centerMenu,
 // } from '@/common/mock-data/vac.js'
 
-import { VACATIONDETAIL, CENTERMENU } from '@/common/misc.js'
+import { VACATION_DETAIL, STUDENT_CENTER_MENU } from '@/common/misc.js'
 import { START_PAGE } from '@/common/misc.js'
 
 export default {
@@ -148,12 +148,12 @@ export default {
     },
     // this.initVacation
     initData() {
-      if (!uni.getStorageSync(VACATIONDETAIL)) {
+      if (!uni.getStorageSync(VACATION_DETAIL)) {
         // [服务器] 请求默认数据
         this.$http
           .get('/api/vac/sample')
           .then((res) => {
-            uni.setStorageSync(VACATIONDETAIL, res.data)
+            uni.setStorageSync(VACATION_DETAIL, res.data)
           })
           .catch((err) => {
             console.log('err:func(App)(initData)', err)
@@ -162,12 +162,12 @@ export default {
 
       return
 
-      // let vacDetail = uni.getStorageSync(VACATIONDETAIL)
-      // if (!uni.getStorageSync(VACATIONDETAIL)) {
-      // 	uni.setStorageSync(VACATIONDETAIL, VacationDetailInfo)
+      // let vacDetail = uni.getStorageSync(VACATION_DETAIL)
+      // if (!uni.getStorageSync(VACATION_DETAIL)) {
+      // 	uni.setStorageSync(VACATION_DETAIL, VacationDetailInfo)
       // }
-      // if (!uni.getStorageSync(CENTERMENU)) {
-      // 	uni.setStorageSync(CENTERMENU, centerMenu)
+      // if (!uni.getStorageSync(STUDENT_CENTER_MENU)) {
+      // 	uni.setStorageSync(STUDENT_CENTER_MENU, centerMenu)
       // }
       // console.log('[APP]vacDetail:', vacDetail);
     },

@@ -2,16 +2,13 @@
 export const START_PAGE = 'START_PAGE'
 export const VERSION = 'VERSION'
 
-export const MAXLENGTH = 20  // 最大假条容量
+export const VACATION_DETAIL = "VACATION_DETAIL"
+export const STUDENT_CENTER_MENU = "STUDENT_CENTER_MENU"
+export const STUDENT_INFO = "STUDENT_INFO"
 
-export const VACATIONDETAIL = "vacationDetail"
-export const CENTERMENU = "centerMenu"
-export const STUINFO = "stuInfo"
-
-
-export const FORMATDAY = "YYYY-MM-DD"
-export const FORMATHOUR = "YYYY-MM-DD HH"
-export const FORMATSECOND = "YYYY-MM-DD HH:mm:ss"
+export const FORMAT_TO_DAY = "YYYY-MM-DD"
+export const FORMAT_TO_HOUR = "YYYY-MM-DD HH"
+export const FORMAT_TO_SECOND = "YYYY-MM-DD HH:mm:ss"
 
 export const USER_INFO = 'USER_INFO'
 

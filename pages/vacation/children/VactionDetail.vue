@@ -84,7 +84,7 @@
 
 <script>
 import VacFooter from './VacFooter.vue'
-import { VACATIONDETAIL, FORMATSECOND, FORMATHOUR, FORMATDAY } from '@/common/misc.js'
+import { VACATION_DETAIL, FORMAT_TO_SECOND, FORMAT_TO_HOUR, FORMAT_TO_DAY } from '@/common/misc.js'
 
 export default {
   onLoad(params) {
@@ -95,7 +95,7 @@ export default {
     this.initEvent()
   },
   onShow() {
-    this.vacationDetail = uni.getStorageSync(VACATIONDETAIL) // 更新数据
+    this.vacationDetail = uni.getStorageSync(VACATION_DETAIL) // 更新数据
     this.vacationDetail = Object.assign({}, this.vacationDetail)
   },
   components: {
@@ -105,8 +105,8 @@ export default {
     showDayDiff() {
       if (!this.vacation) return
 
-      let start = this.$dayjs(this.vacation.detail.startTime, FORMATSECOND)
-      let end = this.$dayjs(this.vacation.detail.endTime, FORMATSECOND)
+      let start = this.$dayjs(this.vacation.detail.startTime, FORMAT_TO_SECOND)
+      let end = this.$dayjs(this.vacation.detail.endTime, FORMAT_TO_SECOND)
 
       // this.$log(this.vacation.startTime, 'startTime')
       this.$log(start, 'start')
@@ -246,7 +246,7 @@ export default {
       if (!id) return
 
       // [服务器]
-      let VacationDetailInfo = uni.getStorageSync(VACATIONDETAIL)
+      let VacationDetailInfo = uni.getStorageSync(VACATION_DETAIL)
       let vacDetailList = VacationDetailInfo.data.list
 
       this.vacation = vacDetailList.find((item) => {
