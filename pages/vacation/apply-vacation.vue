@@ -315,7 +315,7 @@ export default {
 
   //     if (!action) return
 
-  //     this.action = action
+  //     this.currentAction = action
   //     switch (action) {
   //       case 'add':
   //         this.title = '申请假条'
@@ -361,9 +361,11 @@ export default {
     if (!action) return
 
     //保留状态
-    this.action = action
+    this.currentAction = action
+    this.currentId = id
 
     if (action == 'add') {
+      console.log('[onLoad](新增假条):')
       // 生成数据
       const newForm = {
         type: 1,
@@ -384,6 +386,7 @@ export default {
 
       this.form = { ...newForm }
     } else if (action == 'edit') {
+      console.log('[onLoad](编辑假条):', id)
       if (!id) {
         return uni.showToast({
           title: '未知错误',
@@ -391,21 +394,6 @@ export default {
           mask: true,
         })
       }
-      /**
-       * "apply_time": "2021-11-05T05:09:26.000Z",
-        "start_time": "2021-11-05T05:09:26.000Z",
-        "end_time": "2021-11-05T05:09:26.000Z",
-        "type": null,
-        "reason": null,
-        "is_tell_parent": false,
-        "is_leave_school": true,
-        "urgent_name": null,
-        "urgent_tel": null,
-        "other": null,
-        "check_name": null,
-        "check_time": "2021-11-05T05:09:26.000Z",
-        "status": "pass",
-       */
 
       // 请求数据
       this.$http
@@ -429,21 +417,15 @@ export default {
           }
 
           this.form = { ...newForm }
-
-          // this.form.type = data.type
-          // this.form.typeLabel = types.find((item) => item.value == data.type)?.label
-          // this.form.startTime = data.start_time
-          // this.form.endTime = data.end_time
-          // this.form.reason = data.reason
-          // this.form.isTellParent = data.is_tell_parent
-          // this.form.isLeaveSchool = data.is_leave_school
-          // this.form.status = data.status
-          // this.form.statusLabel = status.find((item) => item.value == data.status)?.label
-          // this.form.checkName = data.check_name
-          // this.form.urgentContactName = data.urgent_name
-          // this.form.urgentContactTel = data.urgent_tel
         })
-        .catch((err) => console.log('[/api/vacation](err):', err))
+        .catch((err) => {
+          uni.showToast({
+            title: '获取假条失败',
+            icon: 'error',
+            mask: true,
+          })
+          console.log('[/api/vacation](err):', err)
+        })
     } else {
       uni.showToast({
         title: '未知错误',
@@ -462,7 +444,6 @@ export default {
           break
       }
     },
-    // form
     btnAction(action) {
       console.log(action)
       switch (action) {
@@ -499,7 +480,6 @@ export default {
         })
       })
     },
-    // 工具函数
 
     getLastIdIndex() {
       this.freshVacDetail()
@@ -609,27 +589,29 @@ export default {
       }
 
       const self = this
-      switch (this.action) {
-        case 'add':
-          // 修改数据，检查时间和申请时间
-          const form = this.form
-          const computedTime = calcTime(form.startTime)
-          const vacation = {
-            apply_time: computedTime.applyTime,
-            start_time: form.startTime,
-            end_time: form.endTime,
-            type: form.type,
-            reason: form.reason,
-            is_tell_parent: form.isTellParent,
-            is_leave_school: form.isLeaveSchool,
-            urgent_name: form.urgentContactName,
-            urgent_tel: form.urgentContactTel,
-            other: form.other,
-            check_name: form.checkName,
-            check_time: computedTime.checkTime,
-            status: form.status,
-          }
 
+      // 修改数据，检查时间和申请时间
+      const form = this.form
+      const computedTime = calcTime(form.startTime)
+      const vacation = {
+        apply_time: computedTime.applyTime,
+        start_time: form.startTime,
+        end_time: form.endTime,
+        type: form.type,
+        reason: form.reason,
+        is_tell_parent: form.isTellParent,
+        is_leave_school: form.isLeaveSchool,
+        urgent_name: form.urgentContactName,
+        urgent_tel: form.urgentContactTel,
+        other: form.other,
+        check_name: form.checkName,
+        check_time: computedTime.checkTime,
+        status: form.status,
+      }
+
+      // 提交
+      switch (this.currentAction) {
+        case 'add':
           this.$http
             .post('/api/vacation', vacation)
             .then((res) => {
@@ -651,33 +633,45 @@ export default {
               })
               console.log('[/api/vacation](err):', err)
             })
+          break
+        case 'edit':
+          this.$http
+            .put(`/api/vacation/${this.currentId}`, vacation)
+            .then((res) => {
+              uni.showToast({
+                title: '更新成功',
+                icon: 'success',
+                mask: true,
+              })
 
-          // this.vacationDetail.data.list.push(this.vacation)
-          // this.vacationDetail.maxId++
-          // this.save()
+              setTimeout(() => {
+                uni.navigateBack({ delta: 1 })
+              }, 1000)
+            })
+            .catch((err) => {
+              uni.showToast({
+                title: '更新失败',
+                icon: 'error',
+                mask: true,
+              })
+              console.log('[/api/vacation](err):', err)
+            })
+
+          // console.log('[edited]vac:', this.vacation)
+          // let edittmp = this.freshVac(this.form)
+
+          // edittmp = actionCalcTime(edittmp)
+          // let editindex = this.getIndex(edittmp.id)
+
+          // debugger
+
+          // this.saveVac(editindex, edittmp)
 
           // uni.$emit('refreshVacDetailAction')
 
-          // this.success('创建成功，假条编号为：' + this.vacation.id, {}, () => {
+          // this.success('续假成功！', {}, () => {
           //   uni.navigateBack({})
           // })
-          break
-        case 'edit':
-          console.log('[edited]vac:', this.vacation)
-          let edittmp = this.freshVac(this.form)
-
-          edittmp = actionCalcTime(edittmp)
-          let editindex = this.getIndex(edittmp.id)
-
-          debugger
-
-          this.saveVac(editindex, edittmp)
-
-          uni.$emit('refreshVacDetailAction')
-
-          this.success('续假成功！', {}, () => {
-            uni.navigateBack({})
-          })
           break
       }
 
