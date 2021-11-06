@@ -10,14 +10,19 @@
       </u-navbar>
     </view>
 
-    <view class="content">
+    <view v-if="vacationList.length == 0" class="list-empty">
+      <view class="empty">
+        <u-empty text="数据为空" mode="data"></u-empty>
+      </view>
+    </view>
+    <view v-else class="content">
       <u-swipe-action
         v-for="(item, index) in vacationList"
         :show="item.show"
         :index="index"
         :key="item.id"
-        @open="open"
-        :options="options"
+        :options="swiperOptions"
+        @open="swiperOpen"
         @click="swiperClick"
       >
         <view class="item u-border-bottom">
@@ -35,138 +40,39 @@
       </view>
     </view>
 
-    <view class="plug">
-      <view v-if="vacationList && vacationList.length == 0" class="empty">
-        <u-empty text="数据为空" mode="data"></u-empty>
-      </view>
-
-      <!-- popup弹窗 -->
-      <view class="popup">
-        <u-popup ref="popup" v-model="show" mode="bottom" :height="height" closeable>
-          <view class="pop-content-wrapper">
-            <u-form class="form" :model="form" ref="uForm">
-              <u-form-item class="item" :label-width="labelWidth" label="类型" prop="type">
-                <u-input v-model="form.type" />
-              </u-form-item>
-              <u-form-item class="item" :label-width="labelWidth" label="开始时间" prop="startTime">
-                <u-input v-model="form.startTime" />
-              </u-form-item>
-              <u-form-item class="item" :label-width="labelWidth" label="结束时间" prop="endTime">
-                <u-input v-model="form.endTime" />
-              </u-form-item>
-              <u-form-item class="item" :label-width="labelWidth" label="共计x小时" prop="totalHour">
-                <u-input v-model="form.totalHour" />
-              </u-form-item>
-              <u-form-item class="item" :label-width="labelWidth" label="审批情况" prop="status">
-                <u-input v-model="form.status" />
-              </u-form-item>
-            </u-form>
-            <button type="default" class="btn" @click="submit">提交</button>
-          </view>
-        </u-popup>
-      </view>
-
-      <u-toast ref="uToast" />
-      <u-top-tips ref="uTips" :z-index="99999"></u-top-tips>
-
-      <u-modal
-        v-model="modalShow"
-        :content="modalContent"
-        :title="modalTitle"
-        @confirm="modalConfirm"
-        show-cancel-button
-      ></u-modal>
-
-      <!-- popup弹窗 -->
-    </view>
+    <u-modal
+      v-model="deleteModalShow"
+      :content="modalContent"
+      :title="modalTitle"
+      @confirm="deleteModalConfirm"
+      show-cancel-button
+    ></u-modal>
   </view>
 </template>
 
 <script>
-// import VacationItem from './children/VacationItem'
 import VacationItem from './vacation-item'
-
-import { VACATION_DETAIL, FORMAT_TO_SECOND, FORMAT_TO_HOUR, FORMAT_TO_DAY } from '@/common/misc.js'
+import { FORMAT_TO_SECOND } from '@/common/misc.js'
 
 export default {
   components: {
     VacationItem,
   },
-  watch: {
-    show(n, o) {
-      // if(this.isSetedRules) return
-
-      if (o) return
-
-      if (!n) return
-      this.$nextTick(function () {
-        console.log('uForm:', this.$refs.uForm)
-        this.$refs.uForm.setRules(this.rules)
-        // this.isSetedRules = true
-      })
-    },
+  onLoad() {
+    // 请求假条条目
+    this.fetchVacationList()
   },
-  // onLoad() {
-  //   this.initVacList()
-  //   this.initEvent()
-  // },
   onShow() {
-    // this.sortVacList()
-    // this.vacationList = Object.assign([], this.vacationList)
+    this.fetchVacationList()
   },
   data() {
     return {
-      // 辅助变量
-      isInited: false,
-      isListened: false,
-      // 辅助变量
-      // vac
-      currentIndex: -1,
-      // vac
-
       // 弹窗
       modalContent: '',
       modalTitle: '提示',
-      modalShow: false,
-      // 弹窗
+      deleteModalShow: false,
 
-      // form
-      labelWidth: 150,
-      rules: {
-        totalHour: [
-          {
-            required: true,
-            message: '请输入总时间',
-            // 可以单个或者同时写两个触发验证方式
-            trigger: ['change', 'blur'],
-          },
-        ],
-        // intro: [{
-        // 	min: 5,
-        // 	message: '简介不能少于5个字',
-        // 	trigger: 'change'
-        // }]
-      },
-      form: {
-        type: 0, // 类型
-        startTime: '',
-        endTime: '',
-        totalHour: 0, // 共计时间
-        // status: true, // 审批情况
-        status: 0, // 审批情况
-        reason: '',
-        isTellParent: 0,
-        isLeaveSchool: 0,
-      },
-      // form
-
-      // popup
-      height: '90%',
-      isSetedRules: false,
-      show: false,
-      // show: true,
-
-      options: [
+      swiperOptions: [
         {
           text: '编辑',
           style: {
@@ -182,131 +88,93 @@ export default {
       ],
 
       vacationList: [],
+      currentDeleteId: undefined,
     }
   },
-  onLoad() {
-    // 请求假条条目
-    // this.initVacData()
-
-    this.$http
-      .get('/api/vacation')
-      .then((res) => {
-        //TODO 计划：分页功能
-        const list = res.data.list
-
-        this.vacationList = list
-      })
-      .catch((err) => {
-        uni.showToast({
-          title: '服务器异常',
-          icon: 'error',
-          mask: true,
-        })
-        console.log('[](err):', err)
-      })
-  },
   methods: {
-    // form
-    submit() {
-      this.$refs.uForm.validate((valid) => {
-        if (valid) {
-          console.log('验证通过')
-          console.log('form:', this.form)
-          // uni.showLoading({
-          // 	title: '加载中'
-          // })
+    fetchVacationList() {
+      this.$http
+        .get('/api/vacation')
+        .then((res) => {
+          //TODO 计划：分页功能
+          let list = res.data.list
 
-          // this.$refs.uToast.show({
-          this.$refs.uTips.show({
-            title: '更改成功',
-            type: 'success',
-            duration: '2000',
+          // this.vacationList = list
+          list = list.map((item) => {
+            item.show = false
+            return item
+          })
+          this.vacationList = this.sortVacList(list)
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: '服务器异常',
+            icon: 'error',
+            mask: true,
+          })
+          console.log('[](err):', err)
+        })
+    },
+    deleteModalConfirm() {
+      uni.showLoading({
+        title: '删除中',
+      })
+
+      const id = this.currentDeleteId
+      if (!id) return
+
+      this.$http
+        .delete(`/api/vacation/${id}`)
+        .then((res) => {
+          uni.showToast({
+            title: '删除成功',
+            icon: 'success',
+            mask: true,
           })
           setTimeout(() => {
-            // uni.hideLoading()
-            this.show = false
+            this.deleteModalShow = false
+
+            this.fetchVacationList()
           }, 1000)
-        } else {
-          console.log('验证失败')
-          // this.$refs.uToast.show({
-          // 	title: '铁马冰河入梦来',
-          // 	type: 'error',
-          // 	duration: '2300'
-          // })
-        }
-      })
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: '删除失败',
+            icon: 'error',
+            mask: true,
+          })
+        })
+        .finally(() => {
+          uni.hideLoading()
+        })
     },
-    // form
-
-    saveVac() {
-      let tmp = uni.getStorageSync(VACATION_DETAIL)
-      if (!tmp) return this.$log('wran:(本地无数据)')
-
-      tmp.data.list = this.vacationList
-      uni.setStorageSync(VACATION_DETAIL, tmp)
-    },
-    delVac() {
-      if (this.currentIndex == -1) return
-
-      // 删除页面内容
-      this.vacationList.splice(this.currentIndex, 1)
-      this.saveVac()
-    },
-
-    timeOut(callback, title = '操作中') {
-      let delay = 700
-      uni.showLoading({
-        title,
-      })
-      setTimeout(() => {
-        uni.hideLoading()
-        callback()
-      }, delay)
-    },
-
-    // 弹窗
-    modalConfirm() {
-      this.timeOut(() => {
-        this.delVac()
-      }, '删除中')
-    },
-    // 弹窗
-
-    // SwiperAction
     swiperClick(index, index1) {
       console.log('index1', index1)
       let item = this.vacationList[index]
       switch (index1) {
         case 1:
-          // [删除]
-          // this.vacationList.splice(index, 1);
-
-          this.currentIndex = index
+          this.currentDeleteId = item.id
           this.modalContent = '确认删除吗？'
-          this.modalShow = true
-
-          // this.$u.toast(`删除了第${index}个cell`);
+          this.deleteModalShow = true
           break
         case 0:
           const action = 'edit'
           const id = item.id
 
-          // uni.navigateTo({ url: `/pages/vacation/apply-vacation?action=${action}&id=${id}` })
-
-          this.$Router.push({ url: '/pages/vacation/apply-vacation', query: { id, action } })
+          this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { id, action } })
           break
       }
     },
-    open(index) {
+    swiperOpen(index) {
       this.vacationList[index].show = true
       this.vacationList.map((val, idx) => {
+        // 让其他关闭
         if (index != idx) this.vacationList[idx].show = false
         this.vacationList = Object.assign([], this.vacationList)
       })
     },
-
-    // 假条点击事件
     vacItemClick(item) {
+      // 跳转到详情页面
       const id = item.id
       const action = 'edit'
 
@@ -315,51 +183,6 @@ export default {
     applyVacation() {
       const action = 'add'
       this.$Router.push({ path: '/pages/vacation/apply-vacation', query: { action } })
-      // this.$Router.push({ path: `/pages/vacation/apply-vacation?action=${action}` })
-    },
-
-    calcOtherTime() {
-      this.$log(this.vacationList, '第一次，处理假条')
-      const self = this
-
-      if (this.vacationList.length > 0) {
-        let vac = this.vacationList[0]
-        if (!vac) return
-        if (vac.id == 1) {
-          if (!this.isInited) {
-            this.isInited = true
-            return [actionCalcTime(vac)]
-          }
-        }
-      }
-      return
-      // 计算申请时间和审核时间
-      function actionCalcTime(vac) {
-        let times = calcTime(vac)
-
-        vac.detail.checkTime = times.checkTime
-        vac.detail.applyTime = times.applyTime
-        return vac
-      }
-
-      function calcTime(vac) {
-        if (!vac) return
-        self.$log(vac, 'vac')
-        let startTime = vac.detail.startTime
-        startTime = self.$dayjs(startTime, 'YYYY-MM-DD HH:mm:ss')
-
-        let checkTime = startTime.subtract(getRandom(10, 30), 'minute').add(getRandom(0, 60), 'second')
-        let applyTime = startTime.subtract(getRandom(30, 60), 'minute').add(getRandom(0, 60), 'second')
-
-        return {
-          checkTime: checkTime.format(FORMAT_TO_SECOND, 'startTime'),
-          applyTime: applyTime.format(FORMAT_TO_SECOND, 'startTime'),
-        }
-
-        function getRandom(start, end) {
-          return Math.floor(Math.random() * (end - 10) + start)
-        }
-      }
     },
     sortVacList(vacations) {
       // 根据时间排序
@@ -371,71 +194,6 @@ export default {
       })
 
       return vacations
-    },
-    initVacList() {
-      const self = this
-
-      this.vacationList = [] // 置空
-
-      let vacationDetail = uni.getStorageSync(VACATION_DETAIL)
-      // 防止读取不到数据
-      if (!vacationDetail)
-        return setTimeout(() => {
-          initVacList()
-        }, 1000)
-
-      this.vacationList = vacationDetail && vacationDetail.data && vacationDetail.data.list
-
-      // 计算申请时间和审核时间，只处理第一个
-      let tmp = null
-      if (this.vacationList.length == 1) tmp = this.calcOtherTime()
-
-      this.$log(tmp, 'tmp')
-      if (tmp) {
-        this.vacationList = tmp
-        vacationDetail.data.list = tmp
-
-        uni.setStorageSync(VACATION_DETAIL, vacationDetail)
-      }
-
-      this.$log(this.vacationList, 'this.vacationList1')
-      // this.vacationList = Object.assign([], this.vacationList)
-
-      this.sortVacList()
-    },
-    initVacData() {
-      uni.showLoading({
-        title: '加载中',
-      })
-      setTimeout(() => {
-        uni.hideLoading()
-
-        this.initVacList()
-
-        // console.log('Vacation:', Vacation)
-        // this.vacationList = Vacation && Vacation.data && Vacation.data.list
-
-        this.vacationList.forEach((item) => {
-          item.show = false // 挂载新对象用于SwiperAction
-        })
-
-        // this.vacationList = []
-      }, 1000)
-    },
-
-    initEvent() {
-      const self = this
-
-      if (this.isListened) return
-      uni.$on('refreshVacDetailAction', () => {
-        self.$showLoadding(self)
-        setTimeout(() => {
-          self.$hideLoadding(self)
-          self.initVacList()
-          self.$log('刷新数据', 'initEvent111')
-        }, 2100)
-      })
-      this.isListened = true
     },
   },
 }
@@ -470,30 +228,12 @@ export default {
     }
   }
 
-  .plug {
+  .list-empty {
     .empty {
       min-height: 60vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-    }
-
-    .pop-content-wrapper {
-      padding: 0 30rpx;
-
-      .form {
-        .item {
-        }
-      }
-
-      .btn {
-        color: $wm-bg-fff;
-        color: rgba(249, 248, 239, 1);
-        // background-color: rgba(160, 11, 9,1);
-        // background-image: radial-gradient(rgba(160, 11, 9,1), rgba(214, 128, 63,1));
-        background-image: linear-gradient(+90deg, rgba(160, 11, 9, 1), rgba(255, 128, 63, 1));
-        margin-top: 60rpx;
-      }
     }
   }
 }
