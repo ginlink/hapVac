@@ -125,8 +125,6 @@ export default {
       })
     }
     this.currentId = id
-
-    this.fetchVacation()
   },
   onShow() {
     this.fetchVacation()

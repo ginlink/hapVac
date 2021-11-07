@@ -84,10 +84,10 @@ export default {
   components: {
     VacationItem,
   },
-  onLoad() {
-    // 请求假条条目
-    this.fetchVacationList()
-  },
+  // onLoad() {
+  //   // 请求假条条目
+  //   this.fetchVacationList()
+  // },
   onShow() {
     this.fetchVacationList()
   },
