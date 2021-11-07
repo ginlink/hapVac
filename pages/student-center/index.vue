@@ -23,7 +23,7 @@
       <view class="bg2"></view>
       <view class="card info-card" @click="changeInfo">
         <view class="info-avatar" @click.stop="chooseImage">
-          <image :src="stuInfo.icon"></image>
+          <image :src="stuInfo.icon || userInfo.avatar_url"></image>
         </view>
         <view class="info">
           <view class="name-yard">
@@ -117,8 +117,7 @@
 </template>
 
 <script>
-import { StuInfoData } from '@/common/mock-data/vac.js'
-import { STUDENT_INFO } from '@/common/misc.js'
+import { STUDENT_INFO, default_Student_Info } from '@/common/misc.js'
 import backHomeIcon from '@/static/home/home.png'
 
 import { infoRules } from './constant.js'
@@ -126,9 +125,6 @@ import { infoRules } from './constant.js'
 export default {
   components: {},
   onLoad() {
-    // this.fetchStudentInfo()
-  },
-  created() {
     this.initStuInfo()
   },
   data() {
@@ -160,6 +156,9 @@ export default {
     }
   },
   computed: {
+    userInfo() {
+      return this.$store.getters?.userInfo
+    },
     otherList() {
       const centerMenu = this.$store.getters?.centerMenu
       if (!centerMenu) return []
@@ -254,21 +253,20 @@ export default {
           // 写入本地
           self.stuInfo.icon = tmp
           uni.setStorageSync(STUDENT_INFO, self.stuInfo)
-          // console.log(JSON.stringify(res.tempFilePaths));
         },
       })
     },
     // 子组件
     initStuInfo() {
-      let tmp = uni.getStorageSync(STUDENT_INFO)
-      if (tmp) {
-        this.stuInfo = tmp
-        this.form = this.$u.deepClone(tmp)
+      let localStudentInfo = uni.getStorageSync(STUDENT_INFO)
+      if (localStudentInfo) {
+        this.stuInfo = localStudentInfo
+        this.form = this.$u.deepClone(localStudentInfo)
         return
       }
 
-      this.stuInfo = StuInfoData
-      this.form = this.$u.deepClone(StuInfoData)
+      this.stuInfo = default_Student_Info
+      this.form = this.$u.deepClone(default_Student_Info)
     },
     customBack() {
       // uni.navigateTo({ url: '/pages/console/index' })

@@ -98,6 +98,12 @@ export const vacationAdvices = [
   },
 ]
 
+export const default_Student_Info = {
+  name: '点击修改信息',
+  grade: '点击头像换头像',
+  icon: ''
+}
+
 
 export const VERSION_NODES = [
   { version: '1.0.0', pieces: ['* 增加请假、销假、续假功能'], updateTime: '2021.10.12 00:29:52' },
