@@ -15,7 +15,7 @@
         <view class="title">登录后即可展示自己</view>
         <view class="desc">登录即表示同意<text>用户服务协议</text>和<text>隐私协议</text></view>
       </view>
-      <view class="button" @click="getUserInfo">
+      <view class="button" @click="login">
         <view class="icon"><u-icon name="weixin-fill" color="#51aa38" size="28"></u-icon></view>
         <view class="text">微信登录</view>
       </view>
@@ -34,10 +34,7 @@ export default {
     this.wechatLogin()
   },
   methods: {
-    async getAllVacations() {
-      const res = await this.$http.get('/api/vacation')
-    },
-    getUserInfo() {
+    login() {
       const that = this
 
       uni.getUserProfile({
@@ -46,15 +43,21 @@ export default {
           const encryptedData = infoRes.encryptedData
           const iv = infoRes.iv
 
-          that.$http.post('/api/user/getUserInfo/', { encryptedData, iv }).then((res) => {
-            console.log('[getUserInfo](userInfo):', res)
+          that.$http.post('/api/user/getUserInfo', { encryptedData, iv }).then((res) => {
+            that.$http.get('/api/user').then((res) => {
+              const data = res.data
+              that.$store.commit('updateUserInfo', data)
+
+              uni.showToast({
+                title: '微信登录成功',
+                icon: 'success',
+                mask: true,
+              })
+              setTimeout(() => {
+                uni.navigateBack({ delta: 1 })
+              }, 1000)
+            })
           })
-          uni.showToast({
-            title: '微信登录成功',
-            icon: 'success',
-            mask: true,
-          })
-          uni.navigateBack({ delta: 1 })
         },
         fail() {
           uni.showToast({

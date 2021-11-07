@@ -18,6 +18,8 @@ export default {
 
     this.initCenterMenu()
 
+    this.initUserInfo()
+
     // this.initData() // 初始化全局信息
 
     // this.initAppNum()
@@ -35,6 +37,18 @@ export default {
     console.log('App Hide')
   },
   methods: {
+    initUserInfo() {
+      this.$http
+        .get('/api/user')
+        .then((res) => {
+          const data = res.data ?? []
+
+          this.$store.commit('updateUserInfo', data)
+        })
+        .catch((err) => {
+          console.log('err:func(initUserInfo)(user)', err)
+        })
+    },
     initCenterMenu() {
       this.$http
         .get('/api/application')

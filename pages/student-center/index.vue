@@ -4,7 +4,7 @@
       <u-navbar
         title="学生中心"
         :border-bottom="false"
-        :backIconName="backIconName"
+        :backIconName="backHomeIcon"
         backIconSize="56"
         titleColor="#303133"
         titleBold
@@ -117,27 +117,24 @@
 </template>
 
 <script>
-import StuInfo from './student-info'
-import item from './menu'
 import { StuInfoData } from '@/common/mock-data/vac.js'
 import { STUDENT_INFO } from '@/common/misc.js'
-import backIconName from '@/static/home/home.png'
+import backHomeIcon from '@/static/home/home.png'
+
+import { infoRules } from './constant.js'
 
 export default {
-  components: {
-    StuInfo,
-    item,
+  components: {},
+  onLoad() {
+    // this.fetchStudentInfo()
   },
   created() {
     this.initStuInfo()
   },
   data() {
     return {
-      backIconName,
-      // popup
+      backHomeIcon,
       menuShow: false,
-      // popup
-      // form
       isChangePop: false,
       selSex: false,
       sexes: [
@@ -150,29 +147,7 @@ export default {
           value: '2',
         },
       ],
-      rules: {
-        name: [
-          {
-            required: true,
-            message: '请输入姓名',
-            trigger: ['change', 'blur'],
-          },
-        ],
-        yard: [
-          {
-            required: true,
-            message: '请输入院系',
-            trigger: ['change', 'blur'],
-          },
-        ],
-        grade: [
-          {
-            required: true,
-            message: '请输入班级',
-            trigger: ['change', 'blur'],
-          },
-        ],
-      },
+      rules: infoRules,
       form: {
         name: '',
         yard: '',
@@ -181,7 +156,6 @@ export default {
         sex: '',
         nation: '',
       },
-      // form
       stuInfo: {},
     }
   },

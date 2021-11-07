@@ -47,6 +47,23 @@
       @confirm="deleteModalConfirm"
       show-cancel-button
     ></u-modal>
+
+    <u-popup v-model="isSuper" mode="center" border-radius="14" width="80%" :mask-close-able="false">
+      <view class="popup-header">
+        <view class="popup-title">提示</view>
+        <view class="popup-content">
+          <view
+            >您好，幸运请假每日最大服务量为{{ userMax }}人，您是第{{
+              userPosition
+            }}位，现已超出，请明日6点再来，谢谢理解。</view
+          >
+          <view>详情请见公告。</view>
+        </view>
+      </view>
+      <view class="popup-footer" @click="popupSure">
+        <view class="popup-sure">我知道了</view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -76,6 +93,10 @@ export default {
   },
   data() {
     return {
+      userPosition: 101,
+      userMax: 100,
+      isSuper: false,
+
       // 弹窗
       modalContent: '',
       modalTitle: '提示',
@@ -101,13 +122,27 @@ export default {
     }
   },
   methods: {
+    popupSure() {
+      uni.navigateBack({ delta: 1 })
+    },
     fetchVacationList() {
       const dayjs = this.$dayjs
       this.$http
         .get('/api/vacation')
         .then((res) => {
           //TODO 计划：分页功能
-          let list = res.data.list
+          const data = res.data
+
+          const isSuper = data?.isSuper
+          if (isSuper) {
+            this.userPosition = data.count
+            this.userMax = data.maxCount
+            return (this.isSuper = true)
+          }
+
+          let list = data?.list
+
+          if (!list) return
 
           // 先排序
           list = this.sortVacList(list)
@@ -252,6 +287,39 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: center;
+    }
+  }
+
+  .popup-header {
+    padding: 40rpx 30rpx 30rpx;
+    .popup-title {
+      font-size: 32rpx;
+      font-weight: 500;
+      text-align: center;
+    }
+    .popup-content {
+      /* display: flex;
+      justify-content: space-between;
+      align-items: center; */
+      padding: 0 15rpx;
+      .url {
+        color: #4177f6;
+        font-size: 24rpx;
+      }
+    }
+    .wrong-code {
+      border-color: red;
+    }
+  }
+
+  .popup-footer {
+    border-top: 1px solid #eeeeee;
+
+    .popup-sure {
+      text-align: center;
+      padding: 20rpx;
+      color: #4177f6;
+      font-weight: 500;
     }
   }
 }
