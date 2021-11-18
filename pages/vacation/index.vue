@@ -52,11 +52,7 @@
       <view class="popup-header">
         <view class="popup-title">提示</view>
         <view class="popup-content">
-          <view
-            >您好，幸运请假每日最大服务量为{{ userMax }}人，您是第{{
-              userPosition
-            }}位，现已超出，请明日6点再来，谢谢理解。</view
-          >
+          <view>您好，幸运请假每日最大服务量为{{ userMax }}人，现已超出，请明日6点再来，谢谢理解。</view>
           <view>详情请见公告。</view>
         </view>
       </view>
@@ -69,16 +65,7 @@
 
 <script>
 import VacationItem from './vacation-item'
-import {
-  VACATION_DETAIL,
-  FORMAT_TO_SECOND,
-  FORMAT_TO_MINUTE,
-  FORMAT_TO_HOUR,
-  FORMAT_TO_DAY,
-  vacationAdvices,
-  vacationStatus,
-  vacationDetailStatus,
-} from '@/common/misc.js'
+import { FORMAT_TO_MINUTE } from '@/common/misc.js'
 
 export default {
   components: {
@@ -91,12 +78,26 @@ export default {
   onShow() {
     this.fetchVacationList()
   },
+  computed: {
+    isSuper: {
+      get() {
+        const freeCoin = this.userInfo?.free_coin
+
+        return freeCoin ? freeCoin == 0 : true
+      },
+      set(val) {
+        return val
+      },
+    },
+    userInfo() {
+      return this.$store.getters?.userInfo
+    },
+    userMax() {
+      return this.userInfo?.max_access_num
+    },
+  },
   data() {
     return {
-      userPosition: 101,
-      userMax: 100,
-      isSuper: false,
-
       // 弹窗
       modalContent: '',
       modalTitle: '提示',
@@ -132,13 +133,6 @@ export default {
         .then((res) => {
           //TODO 计划：分页功能
           const data = res.data
-
-          const isSuper = data?.isSuper
-          if (isSuper) {
-            this.userPosition = data.count
-            this.userMax = data.maxCount
-            return (this.isSuper = true)
-          }
 
           let list = data?.list
 

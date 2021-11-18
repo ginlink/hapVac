@@ -35,6 +35,7 @@ http.interceptor.response(async (response) => {
 	return response.data
 }, (response) => {
 	const statusCode = response.statusCode
+	const data = response.data
 	console.log('[reject](statusCode):', statusCode)
 
 	switch (statusCode) {
@@ -48,6 +49,13 @@ http.interceptor.response(async (response) => {
 				// uni.redirectTo({ url: '/pages/login/index' })
 				uni.navigateTo({ url: '/pages/login/index' })
 			}, 1000);
+			break;
+		case 400:
+			uni.showToast({
+				title: data.msg,
+				icon: 'error',
+				mask: true
+			})
 			break;
 	}
 

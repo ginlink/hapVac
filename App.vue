@@ -1,11 +1,7 @@
 <script>
-// import {
-// 	VacationDetailInfo,
-// 	centerMenu,
-// } from '@/common/mock-data/vac.js'
-
 import { VACATION_DETAIL, STUDENT_CENTER_MENU } from '@/common/misc.js'
 import { START_PAGE } from '@/common/misc.js'
+import { updateUserInfoAction } from '@/store/actions.js'
 
 export default {
   onLaunch: function () {
@@ -38,16 +34,17 @@ export default {
   },
   methods: {
     initUserInfo() {
-      this.$http
-        .get('/api/user')
-        .then((res) => {
-          const data = res.data ?? []
+      updateUserInfoAction(this)
+      // this.$http
+      //   .get('/api/user')
+      //   .then((res) => {
+      //     const data = res.data ?? []
 
-          this.$store.commit('updateUserInfo', data)
-        })
-        .catch((err) => {
-          console.log('err:func(initUserInfo)(user)', err)
-        })
+      //     this.$store.commit('updateUserInfo', data)
+      //   })
+      //   .catch((err) => {
+      //     console.log('err:func(initUserInfo)(user)', err)
+      //   })
     },
     initCenterMenu() {
       this.$http
