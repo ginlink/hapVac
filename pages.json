@@ -10,6 +10,12 @@
       }
     },
     {
+      "path": "pages/lucky-draw/index",
+      "style": {
+        "navigationBarTitleText": "幸运抽抽抽"
+      }
+    },
+    {
       "path": "pages/vacation/index",
       "style": {
         "navigationBarTitleText": "我的假条"
