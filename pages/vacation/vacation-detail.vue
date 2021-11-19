@@ -189,6 +189,11 @@ export default {
   },
   methods: {
     fetchVacation() {
+      uni.showLoading({
+        title: '加载中',
+        mask: true,
+      })
+
       const id = this.currentId
 
       if (!id) {
@@ -229,6 +234,8 @@ export default {
         })
         .finally(() => {
           this.loaded = true
+
+          uni.hideLoading()
         })
     },
     action(flag) {

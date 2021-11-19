@@ -5,9 +5,10 @@ import { updateUserInfoAction } from '@/store/actions.js'
 
 export default {
   onLaunch: function () {
-    // uni.showLoading({
-    //   title: '加载中',
-    // })
+    uni.showLoading({
+      title: '加载中',
+      mask: true,
+    })
     console.log('App Launch')
 
     this.checkSession()

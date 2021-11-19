@@ -127,6 +127,11 @@ export default {
       uni.navigateBack({ delta: 1 })
     },
     fetchVacationList() {
+      uni.showLoading({
+        title: '加载中',
+        mask: true,
+      })
+
       const dayjs = this.$dayjs
       this.$http
         .get('/api/vacation')
@@ -151,6 +156,8 @@ export default {
 
             return item
           })
+
+          uni.hideLoading()
         })
         .catch((err) => {
           uni.showToast({
