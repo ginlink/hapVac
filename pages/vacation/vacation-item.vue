@@ -15,7 +15,7 @@
           {{ vacation.start_time.slice(5, 11) }}
         </view>
         <view class="icon">
-          <uni-icons type="arrowright" size="17" color="#9b9b9b"></uni-icons>
+          <uni-icons type="arrowright" size="12" color="#9b9b9b"></uni-icons>
         </view>
       </view>
     </view>
@@ -96,24 +96,28 @@ export default {
     align-items: center;
     border-bottom: 2px solid #f5f5f5;
     position: relative;
+
+    .title {
+      font-size: 28rpx;
+    }
+    .time {
+      font-size: 24rpx;
+      color: #9b9b9b;
+    }
+    .check {
+      font-size: 24rpx;
+    }
+
     .inner-item {
       flex: 1;
       display: flex;
       flex-direction: column;
-      .title {
-        font-size: 34rpx;
-      }
-      .time {
-        font-size: 28rpx;
-        color: #9b9b9b;
-      }
     }
     .outer-item {
-      flex: 0.2;
+      flex: 0.1;
       .time {
         position: absolute;
         top: 5px;
-        color: #9b9b9b;
       }
       .icon {
         position: relative;

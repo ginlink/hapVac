@@ -66,6 +66,7 @@
 <script>
 import VacationItem from './vacation-item'
 import { FORMAT_TO_MINUTE } from '@/common/misc.js'
+import { STUDENT_INFO } from '@/common/misc.js'
 
 export default {
   components: {
@@ -90,6 +91,11 @@ export default {
       },
     },
     userInfo() {
+      console.log('[userInfo]:', this.$store.getters?.userInfo)
+
+      const studentInfo = uni.getStorageSync(STUDENT_INFO)
+      console.log('[studentInfo]:', studentInfo)
+
       return this.$store.getters?.userInfo
     },
     userMax() {
