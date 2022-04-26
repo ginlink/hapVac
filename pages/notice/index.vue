@@ -26,8 +26,6 @@
         </u-cell-group>
       </view>
     </view>
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 

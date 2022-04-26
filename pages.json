@@ -1,8 +1,32 @@
 {
   "easycom": {
-    "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+    "^u-(.*)": "@/components/uview-ui/components/u-$1/u-$1.vue"
   },
   "pages": [
+    {
+      "path": "pages/student-center/index",
+      "style": {
+        "navigationBarTitleText": "学生中心"
+      }
+    },
+    {
+      "path": "pages/lucky-draw/index",
+      "style": {
+        "navigationBarTitleText": "幸运抽抽抽"
+      }
+    },
+    {
+      "path": "pages/vacation/index",
+      "style": {
+        "navigationBarTitleText": "我的假条"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登陆"
+      }
+    },
     {
       "path": "pages/index",
       "style": {
@@ -10,7 +34,7 @@
       }
     },
     {
-      "path": "pages/console/console",
+      "path": "pages/console/index",
       "style": {
         "navigationBarTitleText": "操作台"
       }
@@ -28,40 +52,31 @@
       }
     },
     {
-      "path": "pages/stu/stu",
-      "style": {
-        "navigationBarTitleText": "学生中心"
-      }
-    },
-    {
       "path": "pages/console/download",
       "style": {
         "navigationBarTitleText": "下载"
       }
     },
     {
-      "path": "pages/public/pub-edit-vac"
-    },
-    {
-      "path": "pages/vacation/vacation",
+      "path": "pages/vacation/apply-vacation",
       "style": {
-        "navigationBarTitleText": "我的假条"
+        "navigationBarTitleText": "申请假条"
       }
     },
     {
-      "path": "pages/vacation/children/ApplyVacation",
-      "style": {
-        "navigationBarTitleText": "假条申请"
-      }
-    },
-    {
-      "path": "pages/vacation/children/VactionDetail",
+      "path": "pages/vacation/vacation-detail",
       "style": {
         "navigationBarTitleText": "假条详情"
       }
     },
     {
-      "path": "pages/vacation/children/ReportBack",
+      "path": "pages/vacation/code",
+      "style": {
+        "navigationBarTitleText": "电子假条"
+      }
+    },
+    {
+      "path": "pages/vacation/cancel-vacation",
       "style": {
         "navigationBarTitleText": "销假"
       }

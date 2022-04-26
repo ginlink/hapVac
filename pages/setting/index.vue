@@ -38,11 +38,11 @@ export default {
       startPages: [
         {
           label: '应用中心(默认)',
-          value: '/pages/console/console',
+          value: '/pages/console/index',
         },
         {
           label: '学生中心',
-          value: '/pages/stu/stu',
+          value: '/pages/student-center/index',
         },
         // {
         //   label: '设置',

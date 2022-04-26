@@ -1,0 +1,35 @@
+.row-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* & > :not(style) + :not(style) {
+    margin-left: 16rpx;
+  } */
+}
+.row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* & > :not(style) + :not(style) {
+    margin-left: 16rpx;
+  } */
+}
+.row-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  /* & > :not(style) + :not(style) {
+    margin-left: 16rpx;
+  } */
+}
+
+.column-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+}

@@ -1,30 +1,31 @@
 <script>
-// import {
-// 	VacationDetailInfo,
-// 	centerMenu,
-// } from '@/common/mock-data/vac.js'
-
-import { VACATIONDETAIL, CENTERMENU } from '@/common/const/index.js'
+import { VACATION_DETAIL, STUDENT_CENTER_MENU } from '@/common/misc.js'
 import { START_PAGE } from '@/common/misc.js'
+import { updateUserInfoAction } from '@/store/actions.js'
 
 export default {
   onLaunch: function () {
     uni.showLoading({
       title: '加载中',
+      mask: true,
     })
     console.log('App Launch')
 
-    this.initData() // 初始化全局信息
+    this.checkSession()
 
     this.initCenterMenu()
 
-    this.initAppNum()
+    this.initUserInfo()
 
-    this.initNoticeList()
+    // this.initData() // 初始化全局信息
 
-    this.initVersion()
+    // this.initAppNum()
 
-    this.initValidCode()
+    // this.initNoticeList()
+
+    // this.initVersion()
+
+    // this.initValidCode()
   },
   onShow: function () {
     console.log('App Show')
@@ -33,6 +34,74 @@ export default {
     console.log('App Hide')
   },
   methods: {
+    initUserInfo() {
+      updateUserInfoAction(this)
+      // this.$http
+      //   .get('/api/user')
+      //   .then((res) => {
+      //     const data = res.data ?? []
+
+      //     this.$store.commit('updateUserInfo', data)
+      //   })
+      //   .catch((err) => {
+      //     console.log('err:func(initUserInfo)(user)', err)
+      //   })
+    },
+    initCenterMenu() {
+      this.$http
+        .get('/api/application')
+        .then((res) => {
+          const data = res.data ?? []
+
+          let utilList = { open_num: 0, data: [] }
+          let studyList = { open_num: 0, data: [] }
+          let otherList = { open_num: 0, data: [] }
+
+          data.map((item) => {
+            switch (item.type) {
+              case 'util':
+                utilList.data.push(item)
+
+                if (item.is_open) ++utilList.open_num
+                break
+              case 'study':
+                studyList.data.push(item)
+
+                if (item.is_open) ++studyList.open_num
+                break
+              case 'other':
+                otherList.data.push(item)
+
+                if (item.is_open) ++otherList.open_num
+                break
+            }
+          })
+
+          // 区分类别
+          /**
+           * {
+           *  utilList:{open_num: 1, data: []}
+           *  studyList:{open_num: 1, data: []}
+           *  otherList:{open_num: 1, data: []}
+           * }
+           */
+
+          this.$store.commit('updateCenterMenu', { utilList, studyList, otherList })
+        })
+        .catch((err) => {
+          console.log('err:func(created)(stu)', err)
+        })
+    },
+    checkSession() {
+      // 检查用户session是否过期，过期则跳转登录页面，更新个人头像等信息
+      uni.checkSession({
+        // 过期
+        fail: function (err) {
+          console.log('[](err):', '信息过期，去登录', err)
+          this.$Router.push('/pages/login/index')
+        },
+      })
+    },
     initValidCode() {
       this.$http
         .get('/api/validCode')
@@ -89,29 +158,14 @@ export default {
           console.log('err:func(applications)(created)', err)
         })
     },
-    initCenterMenu() {
-      this.$http
-        .get('/api/centermenu_v2')
-        // .get('/api/centermenu_v2_backup')
-        .then((res) => {
-          const data = res.data.data ?? {}
-
-          this.$store.commit('updateCenterMenu', data)
-          uni.hideLoading()
-        })
-        .catch((err) => {
-          console.log('err:func(created)(stu)', err)
-        })
-    },
     // this.initVacation
     initData() {
-      let vacDetail = uni.getStorageSync(VACATIONDETAIL)
-      if (!uni.getStorageSync(VACATIONDETAIL)) {
+      if (!uni.getStorageSync(VACATION_DETAIL)) {
         // [服务器] 请求默认数据
         this.$http
           .get('/api/vac/sample')
           .then((res) => {
-            this.$api.save(VACATIONDETAIL, res.data)
+            uni.setStorageSync(VACATION_DETAIL, res.data)
           })
           .catch((err) => {
             console.log('err:func(App)(initData)', err)
@@ -120,12 +174,12 @@ export default {
 
       return
 
-      // let vacDetail = uni.getStorageSync(VACATIONDETAIL)
-      // if (!uni.getStorageSync(VACATIONDETAIL)) {
-      // 	uni.setStorageSync(VACATIONDETAIL, VacationDetailInfo)
+      // let vacDetail = uni.getStorageSync(VACATION_DETAIL)
+      // if (!uni.getStorageSync(VACATION_DETAIL)) {
+      // 	uni.setStorageSync(VACATION_DETAIL, VacationDetailInfo)
       // }
-      // if (!uni.getStorageSync(CENTERMENU)) {
-      // 	uni.setStorageSync(CENTERMENU, centerMenu)
+      // if (!uni.getStorageSync(STUDENT_CENTER_MENU)) {
+      // 	uni.setStorageSync(STUDENT_CENTER_MENU, centerMenu)
       // }
       // console.log('[APP]vacDetail:', vacDetail);
     },
@@ -134,9 +188,13 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'uview-ui/index.scss';
+@import '@/components/uview-ui/index.scss';
 /* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 @import './common/uni.css';
+
+view {
+  font-size: 32rpx;
+}
 
 // 通用form样式
 .form-wrapper {
@@ -169,7 +227,7 @@ page {
   background-color: #f8f8f8;
 }
 view {
-  font-size: 30rpx;
+  font-size: 32rpx;
 }
 
 /* #endif */
@@ -200,6 +258,21 @@ uni-page-body {
 .uni-app--showleftwindow .hideOnPc {
   display: none !important;
 }
-
 /* #endif */
+
+.card {
+  background-color: $uni-bg-color;
+  border-radius: 20rpx;
+  padding: 30rpx 30rpx;
+}
+
+.page {
+  padding: 40rpx 30rpx;
+  min-height: 100vh;
+  font-size: 32rpx;
+}
+
+@import './spacing.scss';
+@import './row.scss';
+@import './typography.scss';
 </style>

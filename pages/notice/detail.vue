@@ -21,8 +21,6 @@
         <u-button type="primary" @click="back">我知道了</u-button>
       </view>
     </view>
-
-    <n-toast ref="nToast"></n-toast>
   </view>
 </template>
 

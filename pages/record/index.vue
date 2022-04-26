@@ -61,7 +61,9 @@ export default {
       nodes: VERSION_NODES,
     }
   },
-  created() {},
+  created() {
+    console.log('[](route):', this.$Route)
+  },
   methods: {},
 }
 </script>

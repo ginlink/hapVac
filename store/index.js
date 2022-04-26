@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { USER_INFO } from '@/common/misc.js'
 
 Vue.use(Vuex)
 
@@ -11,6 +12,7 @@ export const store = new Vuex.Store({
 		notices: null,
 		version: undefined,
 		validCode: null,
+		userInfo: {},
 	},
 	mutations: {
 		updateIsLoadStartPage(store, payload) {
@@ -30,6 +32,12 @@ export const store = new Vuex.Store({
 		},
 		updateValidCode(store, payload) {
 			store.validCode = payload
+		},
+		updateUserInfo(store, payload) {
+			store.userInfo = payload
+
+			// 本地也存一份
+			uni.setStorageSync(USER_INFO, payload)
 		}
 	},
 	getters: {
@@ -48,6 +56,12 @@ export const store = new Vuex.Store({
 		},
 		validCode: state => {
 			return state.validCode
+		},
+		userInfo: state => {
+			const localUserInfo = uni.getStorageSync(USER_INFO)
+			const userInfo = state.userInfo
+
+			return userInfo ? userInfo : localUserInfo
 		}
 	}
 })
