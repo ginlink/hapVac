@@ -12,6 +12,11 @@
 
     <!-- <view v-if="vacation" class="content" :class="{ 'bottom-space': checkStatus.value == 4 }"> -->
     <view class="content u-skeleton" :class="{ 'bottom-space': checkStatus.value == 4 }">
+      <view class="row-center tips"
+        ><text> 本页面不可作为电子假条凭证！ </text>
+        <text class="a" @click="handleCreateVac">点击生成假条</text>
+      </view>
+
       <view class="status">
         <view class="status-content">
           <view class="icon u-skeleton-circle" :style="{ backgroundColor: checkStatus.color }">
@@ -253,6 +258,11 @@ export default {
           break
       }
     },
+    handleCreateVac() {
+      const id = this.currentId
+
+      this.$Router.push({ path: '/pages/vacation/code', query: { id } })
+    },
   },
 }
 </script>
@@ -377,6 +387,17 @@ export default {
         border-radius: 10rpx;
         line-height: 1;
       }
+    }
+  }
+
+  .tips {
+    font-size: 24rpx;
+    background-color: $theme-color;
+    padding: 20rpx 0;
+    color: #fff;
+
+    .a {
+      color: #eee;
     }
   }
 }

@@ -192,6 +192,10 @@ export default {
 /* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 @import './common/uni.css';
 
+view {
+  font-size: 32rpx;
+}
+
 // 通用form样式
 .form-wrapper {
   padding: 0 30rpx 0;
@@ -223,7 +227,7 @@ page {
   background-color: #f8f8f8;
 }
 view {
-  font-size: 30rpx;
+  font-size: 32rpx;
 }
 
 /* #endif */
@@ -254,6 +258,21 @@ uni-page-body {
 .uni-app--showleftwindow .hideOnPc {
   display: none !important;
 }
-
 /* #endif */
+
+.card {
+  background-color: $uni-bg-color;
+  border-radius: 20rpx;
+  padding: 30rpx 30rpx;
+}
+
+.page {
+  padding: 40rpx 30rpx;
+  min-height: 100vh;
+  font-size: 32rpx;
+}
+
+@import './spacing.scss';
+@import './row.scss';
+@import './typography.scss';
 </style>

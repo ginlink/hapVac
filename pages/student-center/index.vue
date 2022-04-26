@@ -91,6 +91,9 @@
                 <u-form-item required label="班级" prop="grade">
                   <u-input v-model="form.grade" placeholder="请输入" />
                 </u-form-item>
+                <u-form-item required label="学号" prop="number">
+                  <u-input v-model="form.number" placeholder="请输入" />
+                </u-form-item>
                 <u-form-item label="专业" prop="major">
                   <u-input v-model="form.major" placeholder="请输入" />
                 </u-form-item>
@@ -149,6 +152,7 @@ export default {
         yard: '',
         grade: '', // 班级
         major: '',
+        number: '',
         sex: '',
         nation: '',
       },

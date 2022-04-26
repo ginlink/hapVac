@@ -70,6 +70,12 @@
       }
     },
     {
+      "path": "pages/vacation/code",
+      "style": {
+        "navigationBarTitleText": "电子假条"
+      }
+    },
+    {
       "path": "pages/vacation/cancel-vacation",
       "style": {
         "navigationBarTitleText": "销假"
