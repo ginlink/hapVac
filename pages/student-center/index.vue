@@ -80,24 +80,24 @@
       <view class="popup">
         <u-popup mode="bottom" v-model="isChangePop">
           <view class="content">
-            <u-form :model="form" ref="uForm">
+            <u-form :model="form" ref="uForm" label-width="auto">
               <view class="form-wrapper">
-                <u-form-item required label="姓名" prop="name">
+                <u-form-item required label="模拟姓名" prop="name">
                   <u-input v-model="form.name" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item required label="院系" prop="yard">
+                <u-form-item required label="模拟院系" prop="yard">
                   <u-input v-model="form.yard" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item required label="班级" prop="grade">
+                <u-form-item required label="模拟班级" prop="grade">
                   <u-input v-model="form.grade" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item required label="学号" prop="number">
+                <u-form-item required label="模拟学号" prop="number">
                   <u-input v-model="form.number" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item label="专业" prop="major">
+                <u-form-item label="模拟专业" prop="major">
                   <u-input v-model="form.major" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item label="性别" prop="sex">
+                <u-form-item label="模拟性别" prop="sex">
                   <u-input type="select" v-model="form.sex" placeholder="请选择" @click="selSex = true" />
                   <u-select
                     v-model="selSex"
@@ -106,10 +106,13 @@
                     @confirm="confirm(1, $event)"
                   ></u-select>
                 </u-form-item>
-                <u-form-item label="民族" prop="nation">
+                <u-form-item label="模拟民族" prop="nation">
                   <u-input v-model="form.nation" placeholder="请输入" />
                 </u-form-item>
-                <button class="btn" @click="submit">提交</button>
+
+                <u-alert-tips type="warning" :show-icon="true" :description="description"></u-alert-tips>
+
+                <button class="btn" @click="submit">保存</button>
               </view>
             </u-form>
           </view>
@@ -157,6 +160,7 @@ export default {
         nation: '',
       },
       stuInfo: {},
+      description: '请不要填写真实信息，且该数据只会保存在本地',
     }
   },
   computed: {
