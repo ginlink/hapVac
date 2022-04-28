@@ -100,7 +100,7 @@ export const vacationAdvices = [
 
 export const default_Student_Info = {
   name: '点击修改信息',
-  grade: '点击头像换头像',
+  grade: '',
   icon: ''
 }
 
@@ -119,5 +119,7 @@ export const VERSION_NODES = [
     version: '2.0.0', pieces: ['* 增加登录功能', '* 将假条数据置于数据库', '* 增加每日最大容纳用户数'], updateTime: '2021-11-01 14:45:41'
   }, {
     version: '2.1.0', pieces: ['* 增加电子假条', '* 调整假条列表字体大小'], updateTime: '2022-04-26 23:15:59'
+  }, {
+    version: '2.1.1', pieces: ['* 增加轮训数据', '* 修复部分样式问题'], updateTime: '2022-04-28 23:25:31'
   },
 ]
