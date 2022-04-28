@@ -27,4 +27,11 @@ export const infoRules = {
       trigger: ['change', 'blur'],
     },
   ],
+  sex: [
+    {
+      required: true,
+      message: '请选择性别',
+      trigger: ['change', 'blur'],
+    },
+  ],
 }

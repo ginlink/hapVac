@@ -12,7 +12,7 @@
 
     <!-- <view v-if="vacation" class="content" :class="{ 'bottom-space': checkStatus.value == 4 }"> -->
     <view class="content u-skeleton" :class="{ 'bottom-space': checkStatus.value == 4 }">
-      <view class="row-center tips"
+      <view v-if="vacation.status == 4" class="row-center tips"
         ><text> 本页面不可作为电子假条凭证！ </text>
         <text class="a" @click="handleCreateVac">点击生成假条</text>
       </view>

@@ -12,15 +12,20 @@
 
     <view class="content">
       <view class="row-between card">
-        <view>
+        <view class="info-wrapper mr-3">
           <view class="row-start info">
             <view class="sub-header">{{ studentName }}</view>
-            <view class="ml-1"><image src="@/static/vacation/contact.png"></image></view>
+            <view v-if="studentSex == '男'" class="ml-1">
+              <image src="@/static/vacation/male.png"></image>
+            </view>
+            <view v-if="studentSex == '女'" class="ml-1">
+              <image src="@/static/vacation/female.png"></image>
+            </view>
           </view>
           <view class="grey sub-small">学号 {{ studentNumber }}</view>
           <view class="grey sub-small">班级 {{ studentGrade }}</view>
 
-          <view class="blob mt-2">{{ studentYard }}</view>
+          <view class="mt-2 pt-1 bold yard">{{ studentYard }}</view>
         </view>
 
         <view>
@@ -34,8 +39,12 @@
           <view class="small">请假时间</view>
         </view>
         <view> {{ duration }} </view>
-        <view class="box"> </view>
-        <view class="small">生成于 {{ createTime }}</view>
+        <view class="box">
+          <view class="info-avatar" @click.stop="chooseImage">
+            <image :src="studentIcon || userInfo.avatar_url"></image>
+          </view>
+        </view>
+        <view class="sub-small">生成于 {{ createTime }}</view>
       </view>
     </view>
   </view>
@@ -69,6 +78,13 @@ export default {
     this.studentGrade = studentInfo.grade
     this.studentYard = studentInfo.yard
     this.studentNumber = studentInfo.number
+    this.studentSex = studentInfo.sex
+    this.studentIcon = studentInfo.icon
+  },
+  computed: {
+    userInfo() {
+      return this.$store.getters?.userInfo
+    },
   },
   data() {
     return {
@@ -77,6 +93,8 @@ export default {
       studentNumber: '',
       studentGrade: '',
       studentYard: '',
+      studentSex: '',
+      studentIcon: '',
       currentId: undefined,
       createTime: '',
       duration: '',
@@ -173,10 +191,25 @@ export default {
 
   .box {
     border: 3px solid #6787be;
-    width: 373rpx;
-    height: 455rpx;
     border-radius: 16rpx;
     margin: 32rpx 0;
+
+    .info-avatar {
+      width: 356rpx;
+      height: 440rpx;
+      image {
+        width: 356rpx;
+        height: 440rpx;
+      }
+    }
+  }
+
+  .info-wrapper {
+    flex: 1;
+  }
+
+  .yard {
+    border-top: 1rpx solid rgba(155, 155, 155, 0.5);
   }
 }
 </style>
