@@ -17,6 +17,14 @@ export default {
 
     this.initUserInfo()
 
+    setInterval(() => {
+      this.checkSession()
+
+      this.initCenterMenu()
+
+      this.initUserInfo()
+    }, 15000)
+
     // this.initData() // 初始化全局信息
 
     // this.initAppNum()

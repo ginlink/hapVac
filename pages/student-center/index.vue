@@ -94,10 +94,7 @@
                 <u-form-item required label="模拟学号" prop="number">
                   <u-input v-model="form.number" placeholder="请输入" />
                 </u-form-item>
-                <u-form-item label="模拟专业" prop="major">
-                  <u-input v-model="form.major" placeholder="请输入" />
-                </u-form-item>
-                <u-form-item label="模拟性别" prop="sex">
+                <u-form-item required label="模拟性别" prop="sex">
                   <u-input type="select" v-model="form.sex" placeholder="请选择" @click="selSex = true" />
                   <u-select
                     v-model="selSex"
@@ -105,6 +102,9 @@
                     :list="sexes"
                     @confirm="confirm(1, $event)"
                   ></u-select>
+                </u-form-item>
+                <u-form-item label="模拟专业" prop="major">
+                  <u-input v-model="form.major" placeholder="请输入" />
                 </u-form-item>
                 <u-form-item label="模拟民族" prop="nation">
                   <u-input v-model="form.nation" placeholder="请输入" />
