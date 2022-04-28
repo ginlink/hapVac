@@ -74,6 +74,10 @@
           </view>
         </view></view
       >
+
+      <view class="card other-card">
+        <view @click="handleLuckyClick">幸运抽抽抽</view>
+      </view>
     </view>
 
     <view class="plugin">
@@ -210,6 +214,9 @@ export default {
       }
 
       uni.navigateTo({ url: item?.url })
+    },
+    handleLuckyClick() {
+      uni.navigateTo({ url: 'pages/lucky-draw/index' })
     },
     action(flag) {},
     confirm(flag, data) {
