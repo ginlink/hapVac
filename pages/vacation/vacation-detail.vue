@@ -12,7 +12,7 @@
 
     <!-- <view v-if="vacation" class="content" :class="{ 'bottom-space': checkStatus.value == 4 }"> -->
     <view class="content u-skeleton" :class="{ 'bottom-space': checkStatus.value == 4 }">
-      <view v-if="vacation.status == 4" class="row-center tips"
+      <view v-if="vacationCodeShow && vacation.status == 4" class="row-center tips"
         ><text> 本页面不可作为电子假条凭证！ </text>
         <text class="a" @click="handleCreateVac">点击生成假条</text>
       </view>
@@ -170,6 +170,16 @@ export default {
       if (!vacation) return ''
 
       return vacationAdvices[vacation.status ? vacation.status - 1 : 0].label
+    },
+
+    userInfo() {
+      return this.$store.getters?.userInfo
+    },
+    vacationCodeShow() {
+      const vacation_code_open = this.userInfo?.vacation_code_open
+      if (!vacation_code_open) return false
+
+      return Number(vacation_code_open) === 1
     },
   },
   data() {

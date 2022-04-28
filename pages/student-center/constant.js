@@ -20,7 +20,7 @@ export const infoRules = {
       trigger: ['change', 'blur'],
     },
   ],
-  grade: [
+  number: [
     {
       required: true,
       message: '请输入学号',
